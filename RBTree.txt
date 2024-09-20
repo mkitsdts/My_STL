@@ -1,0 +1,1331 @@
+红黑树结点的定义
+红黑树的插入
+红黑树的验证
+红黑树的查找
+红黑树的删除
+红黑树与AVL树的比较
+红黑树的概念
+红黑树是一种二叉搜索树，但在每个结点上增加了一个存储位用于表示结点的颜色，这个颜色可以是红色的，也可以是黑色的，因此我们称之为红黑树。
+
+红黑树通过对任何一条从根到叶子的路径上各个结点着色方式的限制，确保没有一条路径会比其他路径长出两倍，因此红黑树是近似平衡的。
+
+
+红黑树的性质
+红黑树有以下五点性质：
+
+每个结点不是红色就是黑色。
+根结点是黑色的。
+如果一个结点是红色的，则它的两个孩子结点是黑色的。
+对于每个结点，从该结点到其所有后代叶子结点的简单路径上，均包含相同数目的黑色结点。
+每个叶子结点都是黑色的（此处的叶子结点指定是空结点）。
+红黑树如何确保从根到叶子的最长可能路径不会超过最短可能路径的两倍？
+
+根据红黑树的性质3可以得出，红黑树当中不会出现连续的红色结点，而根据性质4又可以得出，从某一结点到其后代叶子结点的所有路径上包含的黑色结点的数目是相同的。
+
+我们假设在红黑树中，从根到叶子的所有路径上包含的黑色结点的个数都是N NN个，那么最短路径就是全部由黑色结点构成的路径，即长度为N NN。
+
+而最长可能路径就是由一黑一红结点构成的路径，该路径当中黑色结点与红色结点的数目相同，即长度为2 N 2N2N。
+
+因此，红黑树从根到叶子的最长可能路径不会超过最短可能路径的两倍。
+
+红黑树结点的定义
+我们这里直接实现KV模型的红黑树，为了方便后序的旋转操作，将红黑树的结点定义为三叉链结构，除此之外还新加入了一个成员变量，用于表示结点的颜色。
+
+template<class K, class V>
+struct RBTreeNode
+{
+	//三叉链
+	RBTreeNode<K, V>* _left;
+	RBTreeNode<K, V>* _right;
+	RBTreeNode<K, V>* _parent;
+
+	//存储的键值对
+	pair<K, V> _kv;
+
+	//结点的颜色
+	int _col; //红/黑
+
+	//构造函数
+	RBTreeNode(const pair<K, V>& kv)
+		:_left(nullptr)
+		, _right(nullptr)
+		, _parent(nullptr)
+		, _kv(kv)
+		, _col(RED)
+	{}
+};
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+在这里我们可以使用枚举来定义结点的颜色，这样可以增加代码的可读性和可维护性，并且便于后序的调试操作。
+
+//枚举定义结点的颜色
+enum Colour
+{
+	RED,
+	BLACK
+};
+1
+2
+3
+4
+5
+6
+为什么构造结点时，默认将结点的颜色设置为红色？
+
+当我们向红黑树插入结点时，若我们插入的是黑色结点，那么插入路径上黑色结点的数目就比其他路径上黑色结点的数目多了一个，即破坏了红黑树的性质4，此时我们就需要对红黑树进行调整。
+
+若我们插入红黑树的结点是红色的，此时如果其父结点也是红色的，那么表明出现了连续的红色结点，即破坏了红黑树的性质3，此时我们需要对红黑树进行调整；但如果其父结点是黑色的，那我们就无需对红黑树进行调整，插入后仍满足红黑树的要求。
+
+总结一下：
+
+插入黑色结点，一定破坏红黑树的性质4，必须对红黑树进行调整。
+插入红色结点，可能破坏红黑树的性质3，可能对红黑树进行调整。
+权衡利弊后，我们在构造结点进行插入时，默认将结点的颜色设置为红色。
+
+红黑树的插入
+红黑树插入结点的逻辑分为三步：
+
+按二叉搜索树的插入方法，找到待插入位置。
+将待插入结点插入到树中。
+若插入结点的父结点是红色的，则需要对红黑树进行调整。
+其中前两步与二叉搜索树插入结点时的逻辑相同，红黑树的关键在于第三步对红黑树的调整。
+
+红黑树在插入结点后是如何调整的？
+
+实际上，在插入结点后并不是一定会对红黑树进行调整，若插入结点的父结点是黑色的，那么我们就不用对红黑树进行调整，因为本次结点的插入并没有破坏红黑树的五点性质。
+
+只有当插入结点的父结点是红色时才需要对红黑树进行调整，因为我们默认插入的结点就是红色的，如果插入结点的父结点也是红色的，那么此时就出现了连续的红色结点，因此需要对红黑树进行调整。
+
+因为插入结点的父结点是红色的，说明父结点不是根结点（根结点是黑色的），因此插入结点的祖父结点（父结点的父结点）就一定存在。
+
+红黑树调整时具体应该如何调整，主要是看插入结点的叔叔（插入结点的父结点的兄弟结点），根据插入结点叔叔的不同，可将红黑树的调整分为三种情况。
+
+情况一：插入结点的叔叔存在，且叔叔的颜色是红色。
+
+此时为了避免出现连续的红色结点，我们可以将父结点变黑，但为了保持每条路径黑色结点的数目不变，因此我们还需要将祖父结点变红，再将叔叔变黑。这样一来既保持了每条路径黑色结点的数目不变，也解决了连续红色结点的问题。
+
+但调整还没有结束，因为此时祖父结点变成了红色，如果祖父结点是根结点，那我们直接再将祖父结点变成黑色即可，此时相当于每条路径黑色结点的数目都增加了一个。
+
+但如果祖父结点不是根结点的话，我们就需要将祖父结点当作新插入的结点，再判断其父结点是否为红色，若其父结点也是红色，那么又需要根据其叔叔的不同，进而进行不同的调整操作。
+
+因此，情况一的抽象图表示如下：
+
+注意： 叔叔存在且为红时，cur结点是parent的左孩子还是右孩子，调整方法都是一样的。
+
+情况二：插入结点的叔叔存在，且叔叔的颜色是黑色。
+
+这种情况一定是在情况一继续往上调整的过程中出现的，即这种情况下的cur结点一定不是新插入的结点，而是上一次情况一调整过程中的祖父结点，如下图：
+
+我们将路径中祖父结点之上黑色结点的数目设为x xx，将叔叔结点之下黑色结点的数目设为y yy，则在插入结点前，图示两条路径黑色结点的数目分别为x + 1 x+1x+1 和 x + 2 + y x+2+yx+2+y，很明显x + 2 + y x+2+yx+2+y 是一定大于 x + 1 x+1x+1的，因此在插入结点前就不满足红黑树的要求了，所以说叔叔结点存在且为黑这种情况，一定是由情况一往上调整过程中才会出现的一种情况。
+
+需要注意：
+
+从根结点一直走到空位置就算一条路径，而不是从根结点走到左右结点均为空的叶子结点时才算一条路径。
+情况二和情况三均需要进行旋转处理，旋转处理后无需继续往上进行调整，所以说情况二一定是由情况一往上调整的过程中出现的。
+出现叔叔存在且为黑时，单纯使用变色已经无法处理了，这时我们需要进行旋转处理。若祖孙三代的关系是直线（cur、parent、grandfather这三个结点为一条直线），则我们需要先进行单旋操作，再进行颜色调整，颜色调整后这棵被旋转子树的根结点是黑色的，因此无需继续往上进行处理。
+
+抽象图表示如下：
+
+说明一下： 当直线关系为，parent是grandfather的右孩子，cur是parent的右孩子时，就需要先进行左单旋操作，再进行颜色调整。
+
+若祖孙三代的关系是折现（cur、parent、grandfather这三个结点为一条折现），则我们需要先进行双旋操作，再进行颜色调整，颜色调整后这棵被旋转子树的根是黑色的，因此无需继续往上进行处理。
+
+抽象图表示如下：
+
+说明一下： 当折现关系为，parent是grandfather的右孩子，cur是parent的左孩子时，就需要先进行右左双旋操作，再进行颜色调整。
+
+情况三：插入结点的叔叔不存在。
+
+在这种情况下的cur结点一定是新插入的结点，而不可能是由情况一变化而来的，因为叔叔不存在说明在parent的下面不可能再挂黑色结点了，如下图：
+
+如果插入前parent下面再挂黑色结点，就会导致图中两条路径黑色结点的数目不相同，而parent是红色的，因此parent下面自然也不能挂红色结点，所以说这种情况下的cur结点一定是新插入的结点。
+
+和情况二一样，若祖孙三代的关系是直线（cur、parent、grandfather这三个结点为一条直线），则我们需要先进行单旋操作，再进行颜色调整，颜色调整后这棵被旋转子树的根结点是黑色的，因此无需继续往上进行处理。
+
+抽象图表示如下：
+
+说明一下： 当直线关系为，parent是grandfather的右孩子，cur是parent的右孩子时，就需要先进行左单旋操作，再进行颜色调整。
+
+若祖孙三代的关系是折现（cur、parent、grandfather这三个结点为一条折现），则我们需要先进行双旋操作，再进行颜色调整，颜色调整后这棵被旋转子树的根是黑色的，因此无需继续往上进行处理。
+
+抽象图表示如下：
+
+说明一下： 当折现关系为，parent是grandfather的右孩子，cur是parent的左孩子时，就需要先进行右左双旋操作，再进行颜色调整。
+
+代码如下：
+
+//插入函数
+pair<Node*, bool> Insert(const pair<K, V>& kv)
+{
+	if (_root == nullptr) //若红黑树为空树，则插入结点直接作为根结点
+	{
+		_root = new Node(kv);
+		_root->_col = BLACK; //根结点必须是黑色
+		return make_pair(_root, true); //插入成功
+	}
+	//1、按二叉搜索树的插入方法，找到待插入位置
+	Node* cur = _root;
+	Node* parent = nullptr;
+	while (cur)
+	{
+		if (kv.first < cur->_kv.first) //待插入结点的key值小于当前结点的key值
+		{
+			//往该结点的左子树走
+			parent = cur;
+			cur = cur->_left;
+		}
+		else if (kv.first > cur->_kv.first) //待插入结点的key值大于当前结点的key值
+		{
+			//往该结点的右子树走
+			parent = cur;
+			cur = cur->_right;
+		}
+		else //待插入结点的key值等于当前结点的key值
+		{
+			return make_pair(cur, false); //插入失败
+		}
+	}
+
+	//2、将待插入结点插入到树中
+	cur = new Node(kv); //根据所给值构造一个结点
+	Node* newnode = cur; //记录新插入的结点（便于后序返回）
+	if (kv.first < parent->_kv.first) //新结点的key值小于parent的key值
+	{
+		//插入到parent的左边
+		parent->_left = cur;
+		cur->_parent = parent;
+	}
+	else //新结点的key值大于parent的key值
+	{
+		//插入到parent的右边
+		parent->_right = cur;
+		cur->_parent = parent;
+	}
+
+	//3、若插入结点的父结点是红色的，则需要对红黑树进行调整
+	while (parent&&parent->_col == RED)
+	{
+		Node* grandfather = parent->_parent; //parent是红色，则其父结点一定存在
+		if (parent == grandfather->_left) //parent是grandfather的左孩子
+		{
+			Node* uncle = grandfather->_right; //uncle是grandfather的右孩子
+			if (uncle&&uncle->_col == RED) //情况1：uncle存在且为红
+			{
+				//颜色调整
+				parent->_col = uncle->_col = BLACK;
+				grandfather->_col = RED;
+
+				//继续往上处理
+				cur = grandfather;
+				parent = cur->_parent;
+			}
+			else //情况2+情况3：uncle不存在 + uncle存在且为黑
+			{
+				if (cur == parent->_left)
+				{
+					RotateR(grandfather); //右单旋
+
+					//颜色调整
+					grandfather->_col = RED;
+					parent->_col = BLACK;
+				}
+				else //cur == parent->_right
+				{
+					RotateLR(grandfather); //左右双旋
+
+					//颜色调整
+					grandfather->_col = RED;
+					cur->_col = BLACK;
+				}
+				break; //子树旋转后，该子树的根变成了黑色，无需继续往上进行处理
+			}
+		}
+		else //parent是grandfather的右孩子
+		{
+			Node* uncle = grandfather->_left; //uncle是grandfather的左孩子
+			if (uncle&&uncle->_col == RED) //情况1：uncle存在且为红
+			{
+				//颜色调整
+				uncle->_col = parent->_col = BLACK;
+				grandfather->_col = RED;
+
+				//继续往上处理
+				cur = grandfather;
+				parent = cur->_parent;
+			}
+			else //情况2+情况3：uncle不存在 + uncle存在且为黑
+			{
+				if (cur == parent->_left)
+				{
+					RotateRL(grandfather); //右左双旋
+
+					//颜色调整
+					cur->_col = BLACK;
+					grandfather->_col = RED;
+				}
+				else //cur == parent->_right
+				{
+					RotateL(grandfather); //左单旋
+
+					//颜色调整
+					grandfather->_col = RED;
+					parent->_col = BLACK;
+				}
+				break; //子树旋转后，该子树的根变成了黑色，无需继续往上进行处理
+			}
+		}
+	}
+	_root->_col = BLACK; //根结点的颜色为黑色（可能被情况一变成了红色，需要变回黑色）
+	return make_pair(newnode, true); //插入成功
+}
+
+//左单旋
+void RotateL(Node* parent)
+{
+	Node* subR = parent->_right;
+	Node* subRL = subR->_left;
+	Node* parentParent = parent->_parent;
+
+	//建立subRL与parent之间的联系
+	parent->_right = subRL;
+	if (subRL)
+		subRL->_parent = parent;
+
+	//建立parent与subR之间的联系
+	subR->_left = parent;
+	parent->_parent = subR;
+
+	//建立subR与parentParent之间的联系
+	if (parentParent == nullptr)
+	{
+		_root = subR;
+		_root->_parent = nullptr;
+	}
+	else
+	{
+		if (parent == parentParent->_left)
+		{
+			parentParent->_left = subR;
+		}
+		else
+		{
+			parentParent->_right = subR;
+		}
+		subR->_parent = parentParent;
+	}
+}
+
+//右单旋
+void RotateR(Node* parent)
+{
+	Node* subL = parent->_left;
+	Node* subLR = subL->_right;
+	Node* parentParent = parent->_parent;
+
+	//建立subLR与parent之间的联系
+	parent->_left = subLR;
+	if (subLR)
+		subLR->_parent = parent;
+
+	//建立parent与subL之间的联系
+	subL->_right = parent;
+	parent->_parent = subL;
+
+	//建立subL与parentParent之间的联系
+	if (parentParent == nullptr)
+	{
+		_root = subL;
+		_root->_parent = nullptr;
+	}
+	else
+	{
+		if (parent == parentParent->_left)
+		{
+			parentParent->_left = subL;
+		}
+		else
+		{
+			parentParent->_right = subL;
+		}
+		subL->_parent = parentParent;
+	}
+}
+
+//左右双旋
+void RotateLR(Node* parent)
+{
+	RotateL(parent->_left);
+	RotateR(parent);
+}
+
+//右左双旋
+void RotateRL(Node* parent)
+{
+	RotateR(parent->_right);
+	RotateL(parent);
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+注意： 在红黑树调整后，需要将根结点的颜色变为黑色，因为红黑树的根结点可能在情况一的调整过程中被变成了红色。
+
+红黑树的验证
+红黑树也是一种特殊的二叉搜索树，因此我们可以先获取二叉树的中序遍历序列，来判断该二叉树是否满足二叉搜索树的性质。
+
+代码如下：
+
+//中序遍历
+void Inorder()
+{
+	_Inorder(_root);
+}
+//中序遍历子函数
+void _Inorder(Node* root)
+{
+	if (root == nullptr)
+		return;
+	_Inorder(root->_left);
+	cout << root->_kv.first << " ";
+	_Inorder(root->_right);
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+但中序有序只能证明是二叉搜索树，要证明二叉树是红黑树还需验证该二叉树是否满足红黑树的性质。
+
+代码如下：
+
+//判断是否为红黑树
+bool ISRBTree()
+{
+	if (_root == nullptr) //空树是红黑树
+	{
+		return true;
+	}
+	if (_root->_col == RED)
+	{
+		cout << "error：根结点为红色" << endl;
+		return false;
+	}
+	
+	//找最左路径作为黑色结点数目的参考值
+	Node* cur = _root;
+	int BlackCount = 0;
+	while (cur)
+	{
+		if (cur->_col == BLACK)
+			BlackCount++;
+		cur = cur->_left;
+	}
+
+	int count = 0;
+	return _ISRBTree(_root, count, BlackCount);
+}
+//判断是否为红黑树的子函数
+bool _ISRBTree(Node* root, int count, int BlackCount)
+{
+	if (root == nullptr) //该路径已经走完了
+	{
+		if (count != BlackCount)
+		{
+			cout << "error：黑色结点的数目不相等" << endl;
+			return false;
+		}
+		return true;
+	}
+
+	if (root->_col == RED&&root->_parent->_col == RED)
+	{
+		cout << "error：存在连续的红色结点" << endl;
+		return false;
+	}
+	if (root->_col == BLACK)
+	{
+		count++;
+	}
+	return _ISRBTree(root->_left, count, BlackCount) && _ISRBTree(root->_right, count, BlackCount);
+}
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+红黑树的查找
+红黑树的查找函数与二叉搜索树的查找方式一模一样，逻辑如下：
+
+若树为空树，则查找失败，返回nullptr。
+若key值小于当前结点的值，则应该在该结点的左子树当中进行查找。
+若key值大于当前结点的值，则应该在该结点的右子树当中进行查找。
+若key值等于当前结点的值，则查找成功，返回对应结点。
+代码如下：
+
+//查找函数
+Node* Find(const K& key)
+{
+	Node* cur = _root;
+	while (cur)
+	{
+		if (key < cur->_kv.first) //key值小于该结点的值
+		{
+			cur = cur->_left; //在该结点的左子树当中查找
+		}
+		else if (key > cur->_kv.first) //key值大于该结点的值
+		{
+			cur = cur->_right; //在该结点的右子树当中查找
+		}
+		else //找到了目标结点
+		{
+			return cur; //返回该结点
+		}
+	}
+	return nullptr; //查找失败
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+红黑树的删除
+红黑树的删除要比插入更加难以理解，但是只要仔细一点也还行。
+
+第一步：找到实际待删除的结点
+
+找结点的过程与二叉搜索树寻找待删除结点的方法一样，若找到的待删除结点的左右子树均不为空，则需要使用替换法进行删除。因此我们最终需要删除的都是左右子树至少有一个为空的结点。
+
+找到实际待删除结点后，先不删除该结点，否则调整红黑树时不容易控制，找到实际待删除结点后立即进行红黑树的调整。
+
+第二步：调整红黑树
+
+调整红黑树之前，我们先判断一下本次结点的删除是否会破坏了红黑树的性质，若破坏了我们才需要对红黑树进行调整。
+
+若实际删除的结点是红色结点，那么本次删除操作不会破坏红黑树的性质，因此我们不需要对红黑树进行调整。反之，若删除的结点是黑色结点，我们就需要对红黑树进行调整，因为黑色结点的删除将会使得一些路径中黑色结点的数目减少，此时便破坏了红黑树的性质四。
+
+我们先来说最简单的一种情况，即待删除结点只有一个孩子为空的情况。
+
+在这种情况下，待删除结点要么是只有左孩子，要么是有只右孩子，但不管是左孩子还是右孩子，这个孩子一定是红色的，因为若这个孩子是黑色的，那么此时图示长蓝色路径的黑色结点数目比短蓝色路径的黑色结点数目多，不符合红黑树的性质。
+
+又因为红黑树当中不允许出现连续的红色结点，因此在这种情况下实际上就只有图示两种实际情况，这时我们直接将待删除结点的那个红孩子变成黑色就行了，因为在后面实际删除结点时会将这个孩子连接到删除结点的父结点下面，连接后相当于我们删除的是一个红色结点，红黑树调整完成。
+
+下面再来说比较复杂的情况，即待删除结点的左右孩子均为空。
+
+我们以待删除结点是其父结点的左孩子为例，分为以下四种情况：
+
+图示说明：
+
+若parent结点为白色，表明parent结点可能是红色结点也可能是黑色结点。
+若bL或bR结点为白色，表明其可能是红色结点或黑色结点甚至该结点不存在。
+bL和bR结点为黑色时，表明他们可能是黑色结点或该结点不存在。
+情况一：brother为红色。
+
+当待删除结点的brother为红色时，我们先以parent为旋转点进行一次左单旋，再将brother的颜色变为黑色，将parent的颜色变为红色，此时我们再对待删除结点cur进行情况分析，情况一就转换成了情况二、三或四。
+
+情况二：brother为黑色，且其左右孩子都是黑色结点或为空。
+
+在该情况下，我们直接将brother的颜色变成红色，此时根据parent的颜色决定红黑树的调整是否结束，若parent的颜色是红色，则我们将parent变为黑色后即可结束红黑树的调整；若parent的颜色原本就是黑色，则我们需要将parent结点当作下一次调整时的cur结点进行情况分析，并且情况二在下一次调整时可能会是情况一、二、三、四当中的任何一种。
+
+情况三：brother为黑色，且其左孩子是红色结点，右孩子是黑色结点或为空。
+
+出现该情况时，我们先以brother为旋转点进行一次右单旋，再将brother结点变为红色，将brotherLeft变为黑色，此时我们再对待删除结点cur进行情况分析，情况三就转换成了情况四。
+
+情况四：brother为黑色，且其右孩子是红色结点。
+
+经过情况四的处理后，红黑树就一定调整结束了。在情况四当中，我们先以parent为旋转点进行一次左单旋，然后将parent的颜色赋值给brother，再将parent的颜色变为黑色，最后将brotherRight变为黑色，此时红黑树的调整便结束了。
+
+说明一下：
+
+待删除结点是其父结点的右孩子时的四种情况与上面四种情况类似，这里就不列举出来了。
+若待删除结点没有父结点，即待删除结点是根结点时，在找到该结点时就进行了删除，这里不用考虑，具体看代码。
+这里有必要对各种情况的切换进行说明，你可能会担心调整红黑树时在这四种情况当中一直来回切换而不能跳出，下面我们来对此进行分析：
+
+首先，进入情况四后红黑树就一定调整结束了。其次，进入情况三后，下次也一定会进入情况四，红黑树的调整也会结束。所以情况三和情况四是没有问题的，你们最纠结的只能是情况一和情况二了。
+
+情况一又会切换为情况二、三、四，因此只要情况二能够有办法退出，那么所有情况就都能退出了。
+
+在情况二当中我们说，如果parent的颜色是红色，那么我们将parent变为黑色后就可以结束红黑树的调整，那会不会每次进入情况二时parent的颜色都不是红色，而一直是黑色的呢？
+
+当然有可能，但是我们若一直往上进行调整时，那么总会调整到红黑树的根结点，当调整到根结点后我们便不用进行调整了，此时根结点虽然是黑色的，但是不影响，这仅仅意味着每条从根到叶子的路径上包含的黑色结点的个数都减少了一个，此时也没有破坏红黑树的性质，也就完成了红黑树的调整，因此在调整过程中不会出现一直在这四种情况来回切换而不能跳出的问题。
+
+第三步：进行结点的实际删除
+
+在红黑树调整完毕后，我们就可以进行结点的删除了，删除结点的方式很简单，若待删除结点有左孩子或右孩子，我们将其左孩子或右孩子连接到待删除结点父结点的下面即可，之后便可以将待删除结点删除了。
+
+代码如下：
+
+//删除函数
+bool Erase(const K& key)
+{
+	//用于遍历二叉树
+	Node* parent = nullptr;
+	Node* cur = _root;
+	//用于标记实际的待删除结点及其父结点
+	Node* delParentPos = nullptr;
+	Node* delPos = nullptr;
+	while (cur)
+	{
+		if (key < cur->_kv.first) //所给key值小于当前结点的key值
+		{
+			//往该结点的左子树走
+			parent = cur;
+			cur = cur->_left;
+		}
+		else if (key > cur->_kv.first) //所给key值大于当前结点的key值
+		{
+			//往该结点的右子树走
+			parent = cur;
+			cur = cur->_right;
+		}
+		else //找到了待删除结点
+		{
+			if (cur->_left == nullptr) //待删除结点的左子树为空
+			{
+				if (cur == _root) //待删除结点是根结点
+				{
+					_root = _root->_right; //让根结点的右子树作为新的根结点
+					if (_root)
+					{
+						_root->_parent = nullptr;
+						_root->_col = BLACK; //根结点为黑色
+					}
+					delete cur; //删除原根结点
+					return true;
+				}
+				else
+				{
+					delParentPos = parent; //标记实际删除结点的父结点
+					delPos = cur; //标记实际删除的结点
+				}
+				break; //进行红黑树的调整以及结点的实际删除
+			}
+			else if (cur->_right == nullptr) //待删除结点的右子树为空
+			{
+				if (cur == _root) //待删除结点是根结点
+				{
+					_root = _root->_left; //让根结点的左子树作为新的根结点
+					if (_root)
+					{
+						_root->_parent = nullptr;
+						_root->_col = BLACK; //根结点为黑色
+					}
+					delete cur; //删除原根结点
+					return true;
+				}
+				else
+				{
+					delParentPos = parent; //标记实际删除结点的父结点
+					delPos = cur; //标记实际删除的结点
+				}
+				break; //进行红黑树的调整以及结点的实际删除
+			}
+			else //待删除结点的左右子树均不为空
+			{
+				//替换法删除
+				//寻找待删除结点右子树当中key值最小的结点作为实际删除结点
+				Node* minParent = cur;
+				Node* minRight = cur->_right;
+				while (minRight->_left)
+				{
+					minParent = minRight;
+					minRight = minRight->_left;
+				}
+				cur->_kv.first = minRight->_kv.first; //将待删除结点的key改为minRight的key
+				cur->_kv.second = minRight->_kv.second; //将待删除结点的value改为minRight的value
+				delParentPos = minParent; //标记实际删除结点的父结点
+				delPos = minRight; //标记实际删除的结点
+				break; //进行红黑树的调整以及结点的实际删除
+			}
+		}
+	}
+	if (delPos == nullptr) //delPos没有被修改过，说明没有找到待删除结点
+	{
+		return false;
+	}
+
+	//记录待删除结点及其父结点（用于后续实际删除）
+	Node* del = delPos;
+	Node* delP = delParentPos;
+
+	//调整红黑树
+	if (delPos->_col == BLACK) //删除的是黑色结点
+	{
+		if (delPos->_left) //待删除结点有一个红色的左孩子（不可能是黑色）
+		{
+			delPos->_left->_col = BLACK; //将这个红色的左孩子变黑即可
+		}
+		else if (delPos->_right) //待删除结点有一个红色的右孩子（不可能是黑色）
+		{
+			delPos->_right->_col = BLACK; //将这个红色的右孩子变黑即可
+		}
+		else //待删除结点的左右均为空
+		{
+			while (delPos != _root) //可能一直调整到根结点
+			{
+				if (delPos == delParentPos->_left) //待删除结点是其父结点的左孩子
+				{
+					Node* brother = delParentPos->_right; //兄弟结点是其父结点的右孩子
+					//情况一：brother为红色
+					if (brother->_col == RED)
+					{
+						delParentPos->_col = RED;
+						brother->_col = BLACK;
+						RotateL(delParentPos);
+						//需要继续处理
+						brother = delParentPos->_right; //更新brother（否则在本循环中执行其他情况的代码会出错）
+					}
+					//情况二：brother为黑色，且其左右孩子都是黑色结点或为空
+					if (((brother->_left == nullptr) || (brother->_left->_col == BLACK))
+						&& ((brother->_right == nullptr) || (brother->_right->_col == BLACK)))
+					{
+						brother->_col = RED;
+						if (delParentPos->_col == RED)
+						{
+							delParentPos->_col = BLACK;
+							break;
+						}
+						//需要继续处理
+						delPos = delParentPos;
+						delParentPos = delPos->_parent;
+					}
+					else
+					{
+						//情况三：brother为黑色，且其左孩子是红色结点，右孩子是黑色结点或为空
+						if ((brother->_right == nullptr) || (brother->_right->_col == BLACK))
+						{
+							brother->_left->_col = BLACK;
+							brother->_col = RED;
+							RotateR(brother);
+							//需要继续处理
+							brother = delParentPos->_right; //更新brother（否则执行下面情况四的代码会出错）
+						}
+						//情况四：brother为黑色，且其右孩子是红色结点
+						brother->_col = delParentPos->_col;
+						delParentPos->_col = BLACK;
+						brother->_right->_col = BLACK;
+						RotateL(delParentPos);
+						break; //情况四执行完毕后调整一定结束
+					}
+				}
+				else //delPos == delParentPos->_right //待删除结点是其父结点的左孩子
+				{
+					Node* brother = delParentPos->_left; //兄弟结点是其父结点的左孩子
+					//情况一：brother为红色
+					if (brother->_col == RED) //brother为红色
+					{
+						delParentPos->_col = RED;
+						brother->_col = BLACK;
+						RotateR(delParentPos);
+						//需要继续处理
+						brother = delParentPos->_left; //更新brother（否则在本循环中执行其他情况的代码会出错）
+					}
+					//情况二：brother为黑色，且其左右孩子都是黑色结点或为空
+					if (((brother->_left == nullptr) || (brother->_left->_col == BLACK))
+						&& ((brother->_right == nullptr) || (brother->_right->_col == BLACK)))
+					{
+						brother->_col = RED;
+						if (delParentPos->_col == RED)
+						{
+							delParentPos->_col = BLACK;
+							break;
+						}
+						//需要继续处理
+						delPos = delParentPos;
+						delParentPos = delPos->_parent;
+					}
+					else
+					{
+						//情况三：brother为黑色，且其右孩子是红色结点，左孩子是黑色结点或为空
+						if ((brother->_left == nullptr) || (brother->_left->_col == BLACK))
+						{
+							brother->_right->_col = BLACK;
+							brother->_col = RED;
+							RotateL(brother);
+							//需要继续处理
+							brother = delParentPos->_left; //更新brother（否则执行下面情况四的代码会出错）
+						}
+						//情况四：brother为黑色，且其左孩子是红色结点
+						brother->_col = delParentPos->_col;
+						delParentPos->_col = BLACK;
+						brother->_left->_col = BLACK;
+						RotateR(delParentPos);
+						break; //情况四执行完毕后调整一定结束
+					}
+				}
+			}
+		}
+	}
+	//进行实际删除
+	if (del->_left == nullptr) //实际删除结点的左子树为空
+	{
+		if (del == delP->_left) //实际删除结点是其父结点的左孩子
+		{
+			delP->_left = del->_right;
+			if (del->_right)
+				del->_right->_parent = delP;
+		}
+		else //实际删除结点是其父结点的右孩子
+		{
+			delP->_right = del->_right;
+			if (del->_right)
+				del->_right->_parent = delP;
+		}
+	}
+	else //实际删除结点的右子树为空
+	{
+		if (del == delP->_left) //实际删除结点是其父结点的左孩子
+		{
+			delP->_left = del->_left;
+			if (del->_left)
+				del->_left->_parent = delP;
+		}
+		else //实际删除结点是其父结点的右孩子
+		{
+			delP->_right = del->_left;
+			if (del->_left)
+				del->_left->_parent = delP;
+		}
+	}
+	delete del; //实际删除结点
+	return true;
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+红黑树与AVL树的比较
+红黑树和AVL树都是高效的平衡二叉树，增删查改的时间复杂度都是O ( l o g N ) O(logN)O(logN)，但红黑树和AVL树控制二叉树平衡的方式不同：
+
+AVL树是通过控制左右高度差不超过1来实现二叉树平衡的，实现的是二叉树的严格平衡。
+红黑树是通过控制结点的颜色，从而使得红黑树当中最长可能路径不超过最短可能路径的2倍，实现的是近似平衡。
+相对于AVL树来说，红黑树降低了插入结点时需要进行的旋转的次数，所以在经常进行增删的结构中性能比AVL树更优，实际运用时也大多用的是红黑树。
