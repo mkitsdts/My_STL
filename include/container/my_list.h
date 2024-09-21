@@ -268,6 +268,7 @@ namespace STL
 					++it;
 				}
 				return it;
+			}
 		}
 		void push_back(const_reference value)
 		{
@@ -435,8 +436,6 @@ namespace STL
 			}
 			return erase(temp);
 		}
-	private:
-
 	private:
 		iterator<My_List_Node<T>> head;
 		iterator<My_List_Node<T>> tail;

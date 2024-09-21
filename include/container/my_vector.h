@@ -12,7 +12,6 @@ namespace STL
 	class My_Vector_Iterator
 	{
 	public:
-		using iterator = My_Vector_Iterator;
 		My_Vector_Iterator(value_type* ptr)
 		{
 			this->_ptr = ptr;
@@ -31,24 +30,33 @@ namespace STL
 		}
 		My_Vector_Iterator operator--()
 		{
-			iterator tmp = this;
+			iterator tmp = *this;
 			--_ptr;
 			return tmp;
 		}
 
-		My_Vector_Iterator& operator--(int)
+		My_Vector_Iterator operator--(int)
 		{
 			--_ptr;
 			return *this;
 		}
-		My_Vector_Iterator& operator+(int n)
+		My_Vector_Iterator operator+(int n)
 		{
 			_ptr = _ptr + n;
 			return *this;
 		}
-		value_type& operator*()
+		My_Vector_Iterator operator-(int n)
 		{
-			return *_ptr;
+			_ptr = _ptr - n;
+			return *this;
+		}
+		long long operator-(const My_Vector_Iterator& it)
+		{
+			return _ptr - it._ptr;
+		}
+		long long operator-(My_Vector_Iterator& it)
+		{
+			return _ptr - it._ptr;
 		}
 		value_type* operator->()
 		{
@@ -58,7 +66,10 @@ namespace STL
 		{
 			return _ptr != it._ptr;
 		}
-	private:
+		bool operator==(const iterator& it)
+		{
+			return _ptr == it._ptr;
+		}
 		value_type* _ptr;
 	};
 
@@ -73,30 +84,35 @@ namespace STL
 	public:
 		My_Vector_Reverse_Iterator operator++()
 		{
-			My_Vector_Reverse_Iterator tmp = this;
+			My_Vector_Reverse_Iterator tmp = *this;
 			--_ptr;
 			return tmp;
 		}
 		My_Vector_Reverse_Iterator operator++(int)
 		{
 			--_ptr;
-			return this;
+			return *this;
 		}
 		My_Vector_Reverse_Iterator operator--()
 		{
-			My_Vector_Reverse_Iterator tmp = this;
+			My_Vector_Reverse_Iterator tmp = *this;
 			++_ptr;
 			return tmp;
 		}
 		My_Vector_Reverse_Iterator operator--(int)
 		{
 			++_ptr;
-			return this;
+			return *this;
 		}
 		My_Vector_Reverse_Iterator operator+(int n)
 		{
 			_ptr = _ptr - n;
-			return this;
+			return *this;
+		}
+		My_Vector_Reverse_Iterator operator-(int n)
+		{
+			_ptr = _ptr + n;
+			return *this;
 		}
 		value_type& operator*()
 		{
@@ -106,7 +122,6 @@ namespace STL
 		{
 			return _ptr;
 		}
-	private:
 		value_type* _ptr;
 	};
 
