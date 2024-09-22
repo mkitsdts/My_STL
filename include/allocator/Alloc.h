@@ -108,7 +108,7 @@ namespace STL
 				if (bytes_left > 0)
 				{
 					//内存池还有一些零头，先配给适当的free_list
-					//最终结果是，内存池起始位置变为链表首节�?
+					//最终结果是，内存池起始位置变为链表首节
 					obj** appropriate_free_list = free_list + FREELIST_INDEX(bytes_left);
 					((obj*)start_free)->free_list_link = *appropriate_free_list;
 					*appropriate_free_list = (obj*)(start_free);
@@ -116,7 +116,7 @@ namespace STL
 				}
 				//尝试申请内存
 				start_free = static_cast<char*>(operator new(need_bytes));
-				//内存池申请失�?
+				//内存池申请失
 				if (start_free == nullptr)
 				{
 					//将内存池里的内存全部分配到free_list
@@ -136,7 +136,7 @@ namespace STL
 					}
 					end_free = nullptr;
 				}
-				//内存池申请成�?
+				//内存池申请成
 				//递归调用自己，确保内存池有足够的空间
 				heap_size += need_bytes;
 				end_free = start_free + need_bytes;
