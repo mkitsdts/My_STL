@@ -19,7 +19,7 @@ namespace STL
 	public:
 		My_Vector_Iterator operator++()
 		{
-			iterator tmp = *this;
+			My_Vector_Iterator tmp = *this;
 			++_ptr;
 			return tmp;
 		}
@@ -30,7 +30,7 @@ namespace STL
 		}
 		My_Vector_Iterator operator--()
 		{
-			iterator tmp = *this;
+			My_Vector_Iterator tmp = *this;
 			--_ptr;
 			return tmp;
 		}
@@ -62,11 +62,11 @@ namespace STL
 		{
 			return _ptr;
 		}
-		bool operator!=(const iterator& it)
+		bool operator!=(const My_Vector_Iterator& it)
 		{
 			return _ptr != it._ptr;
 		}
-		bool operator==(const iterator& it)
+		bool operator==(const My_Vector_Iterator& it)
 		{
 			return _ptr == it._ptr;
 		}
@@ -142,8 +142,8 @@ namespace STL
 		}
 		~My_Vector()
 		{
-			Allocator<value_type>::destroy(_begin, _end);
-			Allocator<value_type>::deallocate(_begin,_capacity);
+			alloc::destroy(_begin, _end);
+			alloc::deallocate(_begin,_capacity);
 			_begin = nullptr;
 			_end = nullptr;
 			_current = nullptr;
@@ -161,23 +161,23 @@ namespace STL
 		{
 			return *_current;
 		}
-		My_Vector_Iterator begin()
+		My_Vector_Iterator<value_type> begin()
 		{
 			return _begin + first;
 		}
-		My_Vector_Iterator end()
+		My_Vector_Iterator<value_type> end()
 		{
 			return _current;
 		}
-		My_Vector_Reverse_Iterator rbegin()
+		My_Vector_Reverse_Iterator<value_type> rbegin()
 		{
 			return _current;
 		}
-		My_Vector_Reverse_Iterator rend()
+		My_Vector_Reverse_Iterator<value_type> rend()
 		{
 			return _begin + first;
 		}
-		My_Vector_Iterator at(size_t index)
+		My_Vector_Iterator<value_type> at(size_t index)
 		{
 			return (_begin + index - 1);
 		}
@@ -202,7 +202,7 @@ namespace STL
 			return *(_begin + index);
 		}
 	public:
-		void emplace(My_Vector_Iterator pos,value_type& value)
+		void emplace(My_Vector_Iterator<value_type> pos,value_type& value)
 		{
 			if (isFull())
 			{
@@ -246,9 +246,9 @@ namespace STL
 			_current = _begin;
 			_capacity = 0;
 		}
-		My_Vector_Iterator erase(size_t index)
+		My_Vector_Iterator<value_type> erase(size_t index)
 		{
-			My_Vector_Iterator tmp = _begin + index;
+			My_Vector_Iterator<value_type> tmp = _begin + index;
 			while (tmp != _current)
 			{
 				*tmp = *(tmp + 1);
@@ -258,9 +258,9 @@ namespace STL
 			_capacity = _capacity - 1;
 			return _begin + index;
 		}
-		My_Vector_Iterator erase(My_Vector_Iterator pos)
+		My_Vector_Iterator<value_type> erase(My_Vector_Iterator<value_type> pos)
 		{
-			My_Vector_Iterator tmp = pos;
+			My_Vector_Iterator<value_type> tmp = pos;
 			while (tmp != _current)
 			{
 				*tmp = *(tmp + 1);
@@ -270,10 +270,10 @@ namespace STL
 			_capacity = _capacity - 1;
 			return pos;
 		}
-		My_Vector_Iterator erase(My_Vector_Iterator first, My_Vector_Iterator last)
+		My_Vector_Iterator<value_type> erase(My_Vector_Iterator<value_type> first, My_Vector_Iterator<value_type> last)
 		{
-			My_Vector_Iterator tmp1 = first;
-			My_Vector_Iterator tmp2 = last;
+			My_Vector_Iterator<value_type> tmp1 = first;
+			My_Vector_Iterator<value_type> tmp2 = last;
 			while (tmp2 != _current)
 			{
 				*tmp1 = *(tmp2 + 1);
@@ -286,7 +286,7 @@ namespace STL
 		}
 		void resize(size_t newSize)
 		{
-			My_Vector_Iterator tmp_begin = My_Vector_Iterator(Allocator<value_type>::allocate(newSize));
+			My_Vector_Iterator tmp_begin = My_Vector_Iterator(alloc::allocate(newSize));
 			My_Vector_Iterator tmp_new_begin = tmp_begin;
 			My_Vector_Iterator tmp_origin_begin = _begin;
 			if (tmp_origin_begin != nullptr)
@@ -321,7 +321,7 @@ namespace STL
 		}
 		void resize(size_t newSize, value_type value)
 		{
-			My_Vector_Iterator tmp_begin = My_Vector_Iterator(Allocator<value_type>::allocate(newSize));
+			My_Vector_Iterator tmp_begin = My_Vector_Iterator(alloc::allocate(newSize));
 			My_Vector_Iterator tmp_new_begin = tmp_begin;
 			My_Vector_Iterator tmp_origin_begin = _begin;
 			while (tmp_new_begin != _current)
@@ -342,8 +342,8 @@ namespace STL
 		{
 			if (this != &vec)
 			{
-				Allocator::deallocate(_begin, _size);
-				this->_begin = My_Vector_Iterator(Allocator<value_type>::allocate(vec.size()));
+				alloc::deallocate(_begin, _size);
+				this->_begin = My_Vector_Iterator(alloc::allocate(vec.size()));
 				this->_end = _begin + vec.size();
 				this->_current = _begin;
 				this->_size = vec.size();
@@ -361,7 +361,7 @@ namespace STL
 	private:
 		void allocate(size_t size)
 		{
-			_begin = My_Vector_Iterator(Allocator<value_type>::allocate(size));
+			_begin = My_Vector_Iterator(alloc::allocate(size));
 			_end = _begin + size;
 			_current = _begin;
 		}
@@ -388,9 +388,9 @@ namespace STL
 		enum { no_num = 0 };
 		enum { first = 1 };
 	private:
-		My_Vector_Iterator _begin;
-		My_Vector_Iterator _end;
-		My_Vector_Iterator _current;
+		My_Vector_Iterator<value_type> _begin;
+		My_Vector_Iterator<value_type> _end;
+		My_Vector_Iterator<value_type> _current;
 		size_t _size;
 		size_t _capacity;
 	};

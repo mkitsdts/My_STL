@@ -9,17 +9,15 @@
 
 namespace STL
 {
-	template<class value_type>
+	template<typename value_type>
 	class Allocator
 	{
-	 public:
+	public:
 		Allocator() = default;
 		~Allocator() = default;
 
-		//分配内存
 		static value_type* allocate(size_t n)
 		{
-			//申请n个T类型的内存
 			if (n <= 0)
 			{
 				return nullptr;
@@ -31,15 +29,14 @@ namespace STL
 		}
 		static value_type* allocate()
 		{
-			//申请1个字节T类型的内存
 			return static_cast<value_type*>(Alloc::allocate((size_t)sizeof(value_type)));
 		}
-		//释放内存
+
 		static void deallocate(value_type* ptr, size_t n)
 		{
 			Alloc::deallocate(static_cast<void*>(ptr),static_cast<size_t>(n));
 		}
-		//构造
+
 		static void construct(value_type*ptr)
 		{
 			new(ptr)value_type();
@@ -49,13 +46,8 @@ namespace STL
 			new(ptr)value_type(value);
 		}
 		
-		//析构
 		static void destroy(value_type* ptr)
 		{
-			//写这段代码的时候发现了一个新的东西
-			//就是说
-			//如果我这样写 int a=0; int* b=&a; b->~int(); 是无法通过编译的
-			//很有趣，后面再回头深究一下
 			ptr->~T();
 		}
 		static void destroy(value_type* begin, value_type* end)
