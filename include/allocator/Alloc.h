@@ -159,7 +159,7 @@ namespace STL
 			obj* list = free_list[index];
 			if (list)
 			{
-				//此list还有空间给我�?
+				//此list还有空间给
 				free_list[index] = list->free_list_link;
 				return list;
 			}
