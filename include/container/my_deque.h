@@ -59,9 +59,59 @@ namespace STL
     };
 
     template <typename value_type>
+    class My_Deque_Reverse_Iterator
+    {
+    public:
+        My_Deque_Reverse_Iterator()
+        {
+        }
+        My_Deque_Reverse_Iterator(value_type* ptr)
+        {
+            _ptr = ptr;
+        }
+        My_Deque_Reverse_Iterator operator=(const My_Deque_Reverse_Iterator& iterator)
+        {
+            _ptr = iterator._ptr;
+            return *this;
+        }
+        My_Deque_Reverse_Iterator operator++()
+        {
+            My_Deque_Reverse_Iterator tmp = *this;
+            --_ptr;
+            return tmp;
+        }
+        My_Deque_Reverse_Iterator operator++(int)
+        {
+            --_ptr;
+            return *this;
+        }
+        My_Deque_Reverse_Iterator operator--()
+        {
+            My_Deque_Iterator tmp = *this;
+            ++_ptr;
+            return tmp;
+        }
+        My_Deque_Reverse_Iterator operator--(int)
+        {
+            ++_ptr;
+            return *this;
+        }
+        value_type& operator*()
+        {
+            return *_ptr;
+        }
+        value_type* operator->()
+        {
+            return _ptr;
+        }
+        value_type* _ptr;
+    };
+
+    template <typename value_type>
     class My_Deque
     {
         using iterator = My_Deque_Iterator<value_type>;
+        using reverse_iterator = My_Deque_Reverse_Iterator<value_type>;
     public:
         My_Deque():_begin(nullptr),_end(nullptr),_size(0),_capacity(0)
         {
@@ -224,13 +274,13 @@ namespace STL
         {
             return _back + 1;
         }
-        iterator rbegin()
+        reverse_iterator rbegin()
         {
-            return _back;
+            return reverse_iterator(*_back);
         }
-        iterator rend()
+        reverse_iterator rend()
         {
-            return _front - 1;
+            return reverse_iterator(*(_front - 1));
         }
 
         void resize(size_t size)
