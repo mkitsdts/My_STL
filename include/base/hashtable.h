@@ -2,6 +2,7 @@
 #define MY_STL_HASHTABLE_H
 
 #include "../allocator/Allocator.h"
+#include <string_view>
 #include <string>
 
 namespace STL
@@ -25,7 +26,7 @@ namespace STL
 
 		}
 
-		int hash(std::string )
+		int index(std::string_view )
 		{
 			
 		}

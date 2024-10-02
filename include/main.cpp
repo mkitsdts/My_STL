@@ -1,15 +1,12 @@
-#include "./container/my_vector.h"
+#include "./container/my_string.h"
 #include <iostream>
 using namespace STL;
 
 int main()
 {
-	My_Vector<int> vec;
-	vec.push_back(1);
-	vec.push_back(2);
-	vec.push_back(3);
-
-	std::cout<<vec.size()<<std::endl;
+	My_String str;
+	std::cin>>str;
+	std::cout<<str<<"\n";
 	return 0;
 
 }

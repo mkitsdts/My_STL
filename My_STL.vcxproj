@@ -23,6 +23,7 @@
     <ClInclude Include="include\allocator\Alloc.h" />
     <ClInclude Include="include\allocator\Allocator.h" />
     <ClInclude Include="include\base\hashtable.h" />
+    <ClInclude Include="include\base\RBTree.h" />
     <ClInclude Include="include\container\my_deque.h" />
     <ClInclude Include="include\container\my_easy_unordered_set.h" />
     <ClInclude Include="include\container\my_list.h" />
@@ -30,9 +31,8 @@
     <ClInclude Include="include\container\my_queue.h" />
     <ClInclude Include="include\container\my_set.h" />
     <ClInclude Include="include\container\my_stack.h" />
-    <ClInclude Include="include\container\my_unordered_set.h" />
+    <ClInclude Include="include\container\my_string.h" />
     <ClInclude Include="include\container\my_vector.h" />
-    <ClInclude Include="include\container\RBTree.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\main.cpp" />
