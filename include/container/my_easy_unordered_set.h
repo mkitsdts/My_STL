@@ -1,6 +1,6 @@
 #ifndef MY_STL_MY_EASY_UNORDERED_SET
 #define MY_STL_MY_EASY_UNORDERED_SET
-#include "../allocator/Allocator.h"
+#include "../base/hashtable.h"
 
 /*
 简单实现标准库实现难度过高
@@ -13,15 +13,8 @@ namespace STL
 	template<class value_type, class alloc = Allocator<value_type>>
 	class My_Easy_Unordered_Set
 	{
-		constexpr auto DEFAULT_BUCKET_COUNT = 10;
 	public:
-		struct node
-		{
-			value_type data;
-			node* next;
-		};
-	public:
-		My_Easy_Unordered_Set() :_table(nullptr)
+		My_Easy_Unordered_Set()
 		{
 		}
 		~My_Easy_Unordered_Set()
@@ -29,40 +22,37 @@ namespace STL
 		}
 		void insert(value& val)
 		{
-
+			_table.insert(val);
 		}
 		void insert(value&& val)
 		{
-
+			_table.insert(val);
 		}
 		void insert(const value& val)
 		{
-
+			_table.insert(val);
 		}
 
 		void erase(value& val)
 		{
-
+			_table.erase(val);
 		}
 		void erase(value&& val)
 		{
-
+			_table.erase(val);
 		}
 		void erase(const value& val)
 		{
-
+			_table.erase(val);
 		}
 
-		bool empty()
+		int count()
 		{
-
+			return _table.count();
 		}
 
 	private:
-		
-
-	private:
-		node** _table;
+		HashTable<value_type> _table;
 	};
 }
 
