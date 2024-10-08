@@ -33,8 +33,6 @@ namespace STL
 				right = nullptr;
 				parent = nullptr;
 			}
-		public:
-
 		private:
 			value_type data;
 			My_Set_Node* left;

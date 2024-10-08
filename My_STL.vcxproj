@@ -23,6 +23,7 @@
     <ClInclude Include="include\allocator\Alloc.h" />
     <ClInclude Include="include\allocator\Allocator.h" />
     <ClInclude Include="include\base\hashtable.h" />
+    <ClInclude Include="include\base\pair.h" />
     <ClInclude Include="include\base\RBTree.h" />
     <ClInclude Include="include\container\my_deque.h" />
     <ClInclude Include="include\container\my_easy_unordered_set.h" />

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef RED_BLACK_TREE
-#define RED_BLACK_TREE
+#ifndef MY_STL_RED_BLACK_TREE
+#define MY_STL_RED_BLACK_TREE
 #include "../allocator/Allocator.h"
 
 namespace STL
@@ -1284,4 +1284,4 @@ namespace STL
 	};
 
 }
-#endif //RED_BLACK_TREE
+#endif //MY_STL_RED_BLACK_TREE
