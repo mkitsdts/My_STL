@@ -1,3 +1,4 @@
+﻿#pragma once
 #ifndef MY_STL_MY_DEQUE_H
 #define MY_STL_MY_DEQUE_H
 
@@ -9,18 +10,23 @@ namespace STL
     constexpr auto BEGIN_SIZE_TIMES = 0.3;
     constexpr auto ADJUST_TIMES = 1.5;
 
-    template <typename value_type>
+    template <class T>
     class My_Deque_Iterator
     {
     public:
+		using iterator = My_Deque_Iterator<T>;
+		using value_type = T;
+        using pointer = T*;
+		using reference = T&;
+	public:
         My_Deque_Iterator()
         {
         }
-        My_Deque_Iterator(value_type* ptr)
+        My_Deque_Iterator(pointer ptr)
         {
             _ptr = ptr;
         }
-        My_Deque_Iterator operator=(const My_Deque_Iterator& iterator)
+        My_Deque_Iterator operator=(My_Deque_Iterator& iterator)
         {
             _ptr = iterator._ptr;
             return *this;
@@ -58,85 +64,39 @@ namespace STL
         value_type* _ptr;
     };
 
-    template <typename value_type>
-    class My_Deque_Reverse_Iterator
-    {
-    public:
-        My_Deque_Reverse_Iterator()
-        {
-        }
-        My_Deque_Reverse_Iterator(value_type* ptr)
-        {
-            _ptr = ptr;
-        }
-        My_Deque_Reverse_Iterator operator=(const My_Deque_Reverse_Iterator& iterator)
-        {
-            _ptr = iterator._ptr;
-            return *this;
-        }
-        My_Deque_Reverse_Iterator operator++()
-        {
-            My_Deque_Reverse_Iterator tmp = *this;
-            --_ptr;
-            return tmp;
-        }
-        My_Deque_Reverse_Iterator operator++(int)
-        {
-            --_ptr;
-            return *this;
-        }
-        My_Deque_Reverse_Iterator operator--()
-        {
-            My_Deque_Iterator tmp = *this;
-            ++_ptr;
-            return tmp;
-        }
-        My_Deque_Reverse_Iterator operator--(int)
-        {
-            ++_ptr;
-            return *this;
-        }
-        value_type& operator*()
-        {
-            return *_ptr;
-        }
-        value_type* operator->()
-        {
-            return _ptr;
-        }
-        value_type* _ptr;
-    };
-
-    template <typename value_type>
+    template <typename T>
     class My_Deque
     {
-        using iterator = My_Deque_Iterator<value_type>;
-        using reverse_iterator = My_Deque_Reverse_Iterator<value_type>;
+    public:
+        using iterator = My_Deque_Iterator<T>;
+        using value_type = T;
+        using pointer = T*;
+        using reference = T&;
     public:
         My_Deque():_begin(nullptr),_end(nullptr),_size(0),_capacity(0)
         {
         }
         My_Deque(size_t size):_begin(Allocator<value_type>::allocate(size*REDUNDANCY_TIMES)),_end(_begin+size*REDUNDANCY_TIMES)
-        _front(iterator(_begin + BEGIN_SIZE_TIMES * size)),_back(iterator(*_front + size)),_size(size),_capacity(size*REDUNDANCY_TIMES)
+        _front(_begin),_back(_front + size),_size(size),_capacity(size*REDUNDANCY_TIMES)
         {
             fillData(value_type());
         }
-        My_deque(size_t size, const value_type value):_begin(Allocator<value_type>::allocate(size*REDUNDANCY_TIMES)),_end(_begin+size*REDUNDANCY_TIMES)
-        _front(iterator(_begin + BEGIN_SIZE_TIMES * size)),_back(iterator(*_front + size)),_size(size),_capacity(size*REDUNDANCY_TIMES)
+        My_Deque(size_t size, value_type value const):_begin(Allocator<value_type>::allocate(size*REDUNDANCY_TIMES)),_end(_begin+size*REDUNDANCY_TIMES)
+        _front(_begin),_back(_front + size),_size(size),_capacity(size*REDUNDANCY_TIMES)
         {
             fillData(value);
         }
-        My_Deque(const My_Deque& deque):_begin(Allocator<value_type>::allocate(deque._capacity)),_end(_begin+deque._capacity)
-        _front(iterator(_begin + (*(deque._front) - _begin))),_back(iterator(*_front + queue._size)),_size(queue._size),_capacity(deque._capacity)
+        My_Deque(My_Deque& deque const):_begin(Allocator<value_type>::allocate(deque._capacity)),_end(_begin+deque._capacity)
+        _front(_begin),_back(_front),_size(queue._size),_capacity(deque._capacity)
         {
-            auto write = _front;
             auto read = deque._front; 
             while(read != deque._back)
             {
-                *write=*read;
-                ++write;
+                *_back=*read;
+                ++_back;
                 ++read;
             }
+			++_back;
         }
         ~My_Deque()
         {
@@ -153,9 +113,29 @@ namespace STL
             ++_back;
             ++_size;
         }
+        void push_back(value_type&& value)
+        {
+            if (_size >= _capacity || *_back == _end)
+            {
+                adjust();
+            }
+            *_back = value;
+            ++_back;
+            ++_size;
+        }
         void push_front(value_type& value)
         {
             if(_size >= _capacity || *_front == _begin)
+            {
+                adjust();
+            }
+            --_front;
+            *_front = value;
+            ++_size;
+        }
+        void push_front(value_type&& value)
+        {
+            if (_size >= _capacity || *_front == _begin)
             {
                 adjust();
             }
@@ -266,21 +246,13 @@ namespace STL
             ++_size;
         }
 
-        iterator begin()
+        iterator& begin()
         {
-            return _front;
+            return iterator(_front);
         }
-        iterator end()
+        iterator& end()
         {
-            return _back + 1;
-        }
-        reverse_iterator rbegin()
-        {
-            return reverse_iterator(*_back);
-        }
-        reverse_iterator rend()
-        {
-            return reverse_iterator(*(_front - 1));
+            return iterator(_back + 1);
         }
 
         void resize(size_t size)
@@ -327,6 +299,14 @@ namespace STL
             *_front=value_type();
         }
 
+		void insert(size_t pos, value_type& value)
+        {
+			emplace(iterator(_front + pos),value);
+		}
+        void insert(size_t pos, value_type&& value)
+        {
+            emplace(iterator(_front + pos), value);
+        }
         void insert(iterator pos, value_type& value)
         {
             emplace(pos,value);
@@ -348,7 +328,7 @@ namespace STL
 
         bool empty()
         {
-            return _size == 0;
+            return (_size == 0);
         }
 
         size_t size()
@@ -356,10 +336,10 @@ namespace STL
             return _size;
         }
 
-        My_Deque_Iterator<value_type> _front;
-        My_Deque_Iterator<value_type> _back;
-        value_type* _begin;
-        value_type* _end;
+        pointer _front;
+        pointer _back;
+        pointer _begin;
+        pointer _end;
         size_t _size;
         size_t _capacity;
     private:

@@ -1,11 +1,11 @@
 #ifndef MY_STL_MY_STACK_H
 #define MY_STL_MY_STACK_H
 
-#include "my_vector.h"
+#include "my_deque.h"
 
 namespace MY_STL
 {
-    template <typename value_type>
+    template <class value_type>
     class My_Stack
     {
     public:
@@ -14,26 +14,26 @@ namespace MY_STL
 
         void push(const value_type& value)
         {
-            _vector.push_back(value);
+            _deque.push_back(value);
         }
         void pop()
         {
-            _vector.pop_back();
+            _deque.pop_front();
         }
         value_type& top()
         {
-            return _vector.back();
+            return _deque.front();
         }
         size_t size()
         {
-            return _vector.size();
+            return _deque.size();
         }
         bool empty()
         {
-            return _vector.empty();
+            return _deque.empty();
         }
     private:
-        My_Vector<value_type> _vector;
+        My_Deque<value_type> _deque;
     };
 }
 

@@ -1,11 +1,12 @@
-#include "./container/my_list.h"
+#include "./memory/memory.h"
 #include <iostream>
 using namespace STL;
 
 int main()
 {
-	My_List<int> list;
-	list.push_back(1);
-	std::cout << list.front() << "\n";
+	int a = 10;
+	int* b = &a;
+	my_shared_ptr<int> ptr(b);
+	std::cout << (*ptr) << "\n";
 	return 0;
 }

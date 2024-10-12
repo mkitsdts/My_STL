@@ -1,91 +1,84 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
+#include <atomic>
+
 namespace STL
 {
-	class Counter
+	template <class T>
+	class my_shared_ptr
 	{
-	public:
-		Counter() :_count(0)
-		{
-		}
-		~Counter()
-		{
-		}
-		void operator++()
-		{
-			++_count;
-		}
-		void operator--()
-		{
-			--_count;
-		}
-		void operator++(int)
-		{
-			++_count;
-		}
-		void operator--(int)
-		{
-			--_count;
-		}
-		int use_count() const noexcept
-		{
-			return _count;
-		}
-	private:
-		int _count;
-	};
-
-	template <class T,class counter = Counter>
-	class shared_ptr
-	{
+		using value_type = T;
 		using pointer = T*;
 	public:
-		explicit shared_ptr() :_ptr(nullptr) 
+		explicit my_shared_ptr() :_ptr(nullptr), _count(new std::atomic<int>(1))
 		{
 		}
-		explicit shared_ptr(pointer ptr) :_ptr(ptr), _count(1)
+		explicit my_shared_ptr(pointer ptr) :_ptr(ptr), _count(new std::atomic<int>(1))
 		{
 		}
-		explicit shared_ptr(const shared_ptr& other) :_ptr(other._ptr), _count(other._count)
+		explicit my_shared_ptr(const my_shared_ptr& other) :_ptr(other._ptr), _count(other._count)
 		{
+			if (_ptr)
+			{
+				++(*_count);
+			}
 		}
-		~shared_ptr()
+		~my_shared_ptr()
 		{
 			delete _ptr;
+			delete _count;
 		}
-		shared_ptr& operator=(shared_ptr& other)
+		my_shared_ptr<T>& operator=(my_shared_ptr<T>& other)
 		{
-			_ptr = other.get();
-			_count = other._count;
-			++_count;
+			if (this != &other)
+			{
+				if (_ptr)
+				{
+					if ((--(*_count)) <= 0)
+					{
+						~my_shared_ptr();
+					}
+				}
+				_ptr = other._ptr;
+				_count = other._count;
+				++(*_count);
+			}
 			return *this;
 		}
-		pointer get() const noecxept
+		pointer get() const noexcept
 		{
 			return _ptr;
 		}
-		int use_count() const noexcept
+		pointer operator->() const noexcept
 		{
-			return _count;
+			return _ptr;
 		}
-		template <class Other>
-		void reset(Other* ptr)
+		value_type& operator*() const noexcept
 		{
-			delete _ptr;
-			_ptr = ptr;
-			_count = 1;
+			return *_ptr;
 		}
-	private:
 		pointer _ptr;
-		int _count;
+		std::atomic<int>* _count;	
 	};
+	template <class T>
+	my_shared_ptr<T> make_shared()
+	{
+		return my_shared_ptr<T>();
+	}
+	template <class T>
+	my_shared_ptr<T> make_shared(T* ptr)
+	{
+		return my_shared_ptr<T>(ptr);
+	}
 
 	template <class T>
-	shared_ptr<T> make_shared()
+	class my_unique_ptr
 	{
-		return shared_ptr<T>();
-	}
+		using value_type = T;
+		using pointer = T*;
+	public:
+	};
 }
 
 #endif // !MEMORY_H
