@@ -22,6 +22,7 @@
     <ClInclude Include="include\container\my_string.h" />
     <ClInclude Include="include\base\RBTree.h" />
     <ClInclude Include="include\base\pair.h" />
+    <ClInclude Include="include\memory\memory.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\main.cpp" />

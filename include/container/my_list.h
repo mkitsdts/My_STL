@@ -1,4 +1,3 @@
-#pragma once
 #ifndef MY_LIST_H
 #define MY_LIST_H
 #include "../allocator/Allocator.h"
@@ -6,7 +5,7 @@
 namespace STL
 {
 	//链表节点
-	template <class T>
+	template<class T>
 	class My_List_Node
 	{
 	public:
@@ -58,33 +57,32 @@ namespace STL
 		{
 			prev = node;
 		}
+		void operator = (My_List_Node& node)
+		{
+			data = node.data;
+			next = node.next;
+			prev = node.prev;
+		}
 	private:
 		T data;
 		My_List_Node* next;
 		My_List_Node* prev;
 	};
 
-	template<class Node>
+	template<class T>
 	class My_List_Iterator
 	{
 	public:
-		using iterator_category = bidirectional_iterator_tag;
-		using value_type = typename Node::value_type;
-		using difference_type = typename Node::difference_type;
-		using pointer = typename Node::pointer;
-		using const_pointer = typename Node::const_pointer;
-		using reference = const Node::reference;
-		using iterator = My_List_Iterator<Node>;
+		using value_type = T;
+		using pointer = T*;
+		using reference = T&;
+		using iterator = My_List_Iterator<T>;
 	public:
-		My_Vector_Iterator(pointer ptr) noexcept
+		My_List_Iterator(pointer ptr) noexcept
 		{
 			_ptr = ptr;
 		}
-		My_Vector_Iterator(const pointer ptr) noexcept
-		{
-			_ptr = ptr;
-		}
-		My_Vector_Iterator(const My_Vector_Iterator& it) noexcept
+		My_List_Iterator(const My_List_Iterator& it) noexcept
 		{
 			this = it;
 		}
@@ -136,7 +134,6 @@ namespace STL
 	class My_Vector_Reverse_Iterator
 	{
 	public:
-		using iterator_category = random_access_iterator_tag;			//迭代器类型
 		using value_type = typename Node::value_type;
 		using difference_type = typename Node::difference_type;
 		using pointer = typename Node::pointer;
@@ -144,15 +141,11 @@ namespace STL
 		using reference = const value_type&;
 		using iterator = My_Vector_Reverse_Iterator<Node>;
 	public:
-		My_Vector_Iterator(pointer ptr) noexcept
+		My_Vector_Reverse_Iterator(pointer ptr) noexcept
 		{
 			_ptr = ptr;
 		}
-		My_Vector_Iterator(const pointer ptr) noexcept
-		{
-			_ptr = ptr;
-		}
-		My_Vector_Iterator(const My_Vector_Iterator& it) noexcept
+		My_Vector_Reverse_Iterator(const My_Vector_Reverse_Iterator& it) noexcept
 		{
 			this = it;
 		}
@@ -207,7 +200,7 @@ namespace STL
 	{
 	public:
 		using value_type = T;
-		using iterator = T*;
+		using iterator = My_List_Iterator<T>;
 		using reference = T&;
 		using const_iterator = const T*;
 		using const_reference = const T&;
@@ -234,40 +227,40 @@ namespace STL
 		{
 			if (head)
 			{
-				return *head;
+				return head->get_data();
 			}
 		}
 		value_type& back()
 		{
 			if (head != tail)
 			{
-				return *tail;
+				return tail->get_data();
 			}
 		}
 		iterator begin()
 		{
-			if (head)
+			if (head != tail)
 			{
-				return head;
+				return iterator(&(head->get_data));
 			}
 		}
 		iterator end()
 		{
 			if (head != tail)
 			{
-				return tail;
+				return iterator(&(tail->get_data));
 			}
 		}
 		iterator at(size_t pos)
 		{
-			if (pos < size)
+			if (pos < _size)
 			{
-				iterator it = head;
+				auto it = head;
 				for (size_t i = 0; i < pos; ++i)
 				{
-					++it;
+					it = it->get_next();
 				}
-				return it;
+				return iterator(it);
 			}
 		}
 		void push_back(const_reference value)
@@ -437,8 +430,8 @@ namespace STL
 			return erase(temp);
 		}
 	private:
-		iterator<My_List_Node<T>> head;
-		iterator<My_List_Node<T>> tail;
+		node* head;
+		node* tail;
 		size_t _size;
 	};
 }
