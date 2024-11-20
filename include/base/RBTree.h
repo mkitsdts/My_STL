@@ -3,30 +3,29 @@
 #define MY_STL_RED_BLACK_TREE
 #include "../allocator/Allocator.h"
 
+constexpr auto RED = true;
+constexpr auto BLACK = false;
+
 namespace STL
 {
 	template <class value_type>
 	struct RBTree
 	{
-		using RED = true;
-		using BLACK = false;
+		
 		struct node
 		{
 		public:
-			node(value_type& value) :parent(nullptr), left(nullptr), right(nullptr), data(value_type()), color(black)//根节点
+			node(value_type& value) :parent(nullptr), left(nullptr), right(nullptr), data(value_type()), color(BLACK)//根节点
 			{
 			}
-			node(node* parent_value, T& value) :parent(parent_value), left(nullptr), right(nullptr), data(value), color(red)//普通节点
+			node(node* parent_value, value_type& value) :parent(parent_value), left(nullptr), right(nullptr), data(value), color(RED)//普通节点
 			{
 			}
 			~node()
 			{
-				operator delete left;
-				left = nullptr;
-				operator delete right;
-				right = nullptr;
-				operator delete parent;
-				parent = nullptr;
+				free(left);
+				free(right);
+				free(parent);
 			}
 			bool operator == (const node& value)
 			{
@@ -74,12 +73,12 @@ namespace STL
 			{
 				if (value < cur->data)
 				{
-					parent = cur;
+					cur_parent = cur;
 					cur = cur->left;
 				}
 				else if (value > cur->data)
 				{
-					parent = cur;
+					cur_parent = cur;
 					cur = cur->right;
 				}
 				else
@@ -88,7 +87,7 @@ namespace STL
 				}
 			}
 
-			cur = new node(parent,value); //根据所给值构造一个结点
+			cur = new node(cur_parent,value); //根据所给值构造一个结点
 			node* newnode = cur; //记录结点（便于后序返回
 			if (value < cur_parent->data)
 			{
@@ -105,15 +104,15 @@ namespace STL
 			while (is_son_self_red(cur_parent))//父结点和待插入节点是红色
 			{
 				node* cur_grandfather = cur_parent->parent; //parent是红色，则其父结点一定存在
-				if (parent == grandfather->left) //parent是grandfather的左孩子
+				if (cur_parent == cur_grandfather->left) //parent是grandfather的左孩子
 				{
 					node* cur_uncle = cur_grandfather->right; //uncle是grandfather的右孩子
-					if (cur_uncle && uncle->color == RED) //uncle存在且为红
+					if (cur_uncle && cur_uncle->color == RED) //uncle存在且为红
 					{
 						//颜色调整
-						parent->color = BLACK;
-						uncle->color = BLACK;
-						grandfather->color = RED;
+						cur_parent->color = BLACK;
+						cur_uncle->color = BLACK;
+						cur_grandfather->color = RED;
 
 						//继续往上处理
 						cur = cur_grandfather;
@@ -124,7 +123,7 @@ namespace STL
 						//左左情况
 						if (cur == cur_parent->left)
 						{
-							right_rotate(grandfather); //右单旋
+							right_rotate(cur_grandfather); //右单旋
 							//颜色调整
 							cur_grandfather->color = RED;
 							cur_parent->color = BLACK;
@@ -143,7 +142,7 @@ namespace STL
 				else //parent是grandfather的右孩子
 				{
 					node* cur_uncle = cur_grandfather->left;
-					if (cur_uncle && cur_uncle->color == RED
+					if (cur_uncle && cur_uncle->color == RED)
 					{
 						//颜色调整
 						cur_uncle->color = BLACK;
@@ -191,12 +190,12 @@ namespace STL
 			{
 				if (value < cur->data)
 				{
-					parent = cur;
+					cur_parent = cur;
 					cur = cur->left;
 				}
 				else if (value > cur->data)
 				{
-					parent = cur;
+					cur_parent = cur;
 					cur = cur->right;
 				}
 				else
@@ -205,7 +204,7 @@ namespace STL
 				}
 			}
 
-			cur = new node(parent, value); //根据所给值构造一个结点
+			cur = new node(cur_parent, value); //根据所给值构造一个结点
 			node* newnode = cur; //记录结点（便于后序返回
 			if (value < cur_parent->data)
 			{
@@ -222,15 +221,15 @@ namespace STL
 			while (is_son_self_red(cur_parent))//父结点和待插入节点是红色
 			{
 				node* cur_grandfather = cur_parent->parent; //parent是红色，则其父结点一定存在
-				if (parent == grandfather->left) //parent是grandfather的左孩子
+				if (cur_parent == cur_grandfather->left) //parent是grandfather的左孩子
 				{
 					node* cur_uncle = cur_grandfather->right; //uncle是grandfather的右孩子
-					if (cur_uncle && uncle->color == RED) //uncle存在且为红
+					if (cur_uncle && cur_uncle->color == RED) //uncle存在且为红
 					{
 						//颜色调整
-						parent->color = BLACK;
-						uncle->color = BLACK;
-						grandfather->color = RED;
+						cur_parent->color = BLACK;
+						cur_uncle->color = BLACK;
+						cur_grandfather->color = RED;
 
 						//继续往上处理
 						cur = cur_grandfather;
@@ -241,7 +240,7 @@ namespace STL
 						//左左情况
 						if (cur == cur_parent->left)
 						{
-							right_rotate(grandfather); //右单旋
+							right_rotate(cur_grandfather); //右单旋
 							//颜色调整
 							cur_grandfather->color = RED;
 							cur_parent->color = BLACK;
@@ -260,7 +259,7 @@ namespace STL
 				else //parent是grandfather的右孩子
 				{
 					node* cur_uncle = cur_grandfather->left;
-					if (cur_uncle && cur_uncle->color == RED
+					if (cur_uncle && cur_uncle->color == RED)
 						{
 							//颜色调整
 							cur_uncle->color = BLACK;
@@ -308,12 +307,12 @@ namespace STL
 			{
 				if (value < cur->data)
 				{
-					parent = cur;
+					cur_parent = cur;
 					cur = cur->left;
 				}
 				else if (value > cur->data)
 				{
-					parent = cur;
+					cur_parent = cur;
 					cur = cur->right;
 				}
 				else
@@ -322,7 +321,7 @@ namespace STL
 				}
 			}
 
-			cur = new node(parent, value); //根据所给值构造一个结点
+			cur = new node(cur_parent, value); //根据所给值构造一个结点
 			node* newnode = cur; //记录结点（便于后序返回
 			if (value < cur_parent->data)
 			{
@@ -339,15 +338,15 @@ namespace STL
 			while (is_son_self_red(cur_parent))//父结点和待插入节点是红色
 			{
 				node* cur_grandfather = cur_parent->parent; //parent是红色，则其父结点一定存在
-				if (parent == grandfather->left) //parent是grandfather的左孩子
+				if (cur_parent == cur_grandfather->left) //parent是grandfather的左孩子
 				{
 					node* cur_uncle = cur_grandfather->right; //uncle是grandfather的右孩子
-					if (cur_uncle && uncle->color == RED) //uncle存在且为红
+					if (cur_uncle && cur_uncle->color == RED) //uncle存在且为红
 					{
 						//颜色调整
-						parent->color = BLACK;
-						uncle->color = BLACK;
-						grandfather->color = RED;
+						cur_parent->color = BLACK;
+						cur_uncle->color = BLACK;
+						cur_grandfather->color = RED;
 
 						//继续往上处理
 						cur = cur_grandfather;
@@ -358,7 +357,7 @@ namespace STL
 						//左左情况
 						if (cur == cur_parent->left)
 						{
-							right_rotate(grandfather); //右单旋
+							right_rotate(cur_grandfather); //右单旋
 							//颜色调整
 							cur_grandfather->color = RED;
 							cur_parent->color = BLACK;
@@ -377,7 +376,7 @@ namespace STL
 				else //parent是grandfather的右孩子
 				{
 					node* cur_uncle = cur_grandfather->left;
-					if (cur_uncle && cur_uncle->color == RED
+					if (cur_uncle && cur_uncle->color == RED)
 						{
 							//颜色调整
 							cur_uncle->color = BLACK;
@@ -452,7 +451,7 @@ namespace STL
 						}
 						else
 						{
-							delParentPos = cparent; //标记实际删除结点的父结点
+							delParentPos = cur_parent; //标记实际删除结点的父结点
 							delPos = cur; //标记实际删除的结点
 						}
 						break; //进行红黑树的调整以及结点的实际删除
@@ -472,7 +471,7 @@ namespace STL
 						}
 						else
 						{
-							delParentPos = cparent; //标记实际删除结点的父结点
+							delParentPos = cur_parent; //标记实际删除结点的父结点
 							delPos = cur; //标记实际删除的结点
 						}
 						break; //进行红黑树的调整以及结点的实际删除
@@ -595,18 +594,20 @@ namespace STL
 								//情况三：brother为黑色，且其右孩子是红色结点，左孩子是黑色结点或为空
 								if ((brother->left == nullptr) || (brother->left->color == BLACK))
 								{
-									brother->get_right->color = BLACK;
+									brother->right->color = BLACK;
 									brother->color = RED;
 									left_rotate(brother);
 									//需要继续处理
 									brother = delParentPos->left; //更新brother（否则执行下面情况四的代码会出错）
 								}
 								//情况四：brother为黑色，且其左孩子是红色结点
-								brother->colordelParentPos->color;
-								delParentPos->color = BLACK;
-								brother->left->color = BLACK;
-								right_rotate(delParentPos);
-								break; //情况四执行完毕后调整一定结束
+								else if (!brother->color);
+								{
+									delParentPos->color = BLACK;
+									brother->left->color = BLACK;
+									right_rotate(delParentPos);
+									break; //情况四执行完毕后调整一定结束
+								}
 							}
 						}
 					}
@@ -619,13 +620,13 @@ namespace STL
 				{
 					delP->set_left(del->right);
 					if (del->right)
-						del->right->parent = delp;
+						del->right->parent = delP;
 				}
 				else //实际删除结点是其父结点的右孩子
 				{
 					delP->set_right(del->right);
 					if (del->right)
-						del->right->parent = delp;
+						del->right->parent = delP;
 				}
 			}
 			else //实际删除结点的右子树为空
@@ -643,7 +644,7 @@ namespace STL
 						del->left->parent = delP;
 				}
 			}
-			operator delete del; //实际删除结点
+			free(del); //实际删除结点
 			return true;
 		}
 		bool erase(const value_type& value)
@@ -680,12 +681,12 @@ namespace STL
 								root->parent = nullptr;
 								root->color = BLACK; //根结点为黑色
 							}
-							operator delete cur; //删除原根结点
+							free(cur); //删除原根结点
 							return true;
 						}
 						else
 						{
-							delParentPos = cparent; //标记实际删除结点的父结点
+							delParentPos = cur_parent; //标记实际删除结点的父结点
 							delPos = cur; //标记实际删除的结点
 						}
 						break; //进行红黑树的调整以及结点的实际删除
@@ -700,12 +701,12 @@ namespace STL
 								root->parent = nullptr;
 								root->color = BLACK; //根结点为黑色
 							}
-							operator delete cur; //删除原根结点
+							free(cur); //删除原根结点
 							return true;
 						}
 						else
 						{
-							delParentPos = cparent; //标记实际删除结点的父结点
+							delParentPos = cur_parent; //标记实际删除结点的父结点
 							delPos = cur; //标记实际删除的结点
 						}
 						break; //进行红黑树的调整以及结点的实际删除
@@ -835,11 +836,13 @@ namespace STL
 									brother = delParentPos->left; //更新brother（否则执行下面情况四的代码会出错）
 								}
 								//情况四：brother为黑色，且其左孩子是红色结点
-								brother->colordelParentPos->color;
-								delParentPos->color = BLACK;
-								brother->left->color = BLACK;
-								right_rotate(delParentPos);
-								break; //情况四执行完毕后调整一定结束
+								else if(!brother->color)
+								{
+									delParentPos->color = BLACK;
+									brother->left->color = BLACK;
+									right_rotate(delParentPos);
+									break; //情况四执行完毕后调整一定结束
+								}
 							}
 						}
 					}
@@ -852,13 +855,13 @@ namespace STL
 				{
 					delP->set_left(del->right);
 					if (del->right)
-						del->right->parent = delp;
+						del->right->parent = delP;
 				}
 				else //实际删除结点是其父结点的右孩子
 				{
 					delP->set_right(del->right);
 					if (del->right)
-						del->right->parent = delp;
+						del->right->parent = delP;
 				}
 			}
 			else //实际删除结点的右子树为空
@@ -876,7 +879,7 @@ namespace STL
 						del->left->parent = delP;
 				}
 			}
-			operator delete del; //实际删除结点
+			free(del); //实际删除结点
 			return true;
 		}
 		bool erase(value_type&& value)
@@ -899,7 +902,7 @@ namespace STL
 				{
 					//往该结点的右子树走
 					cur_parent = cur;
-					cur = cur->_right;
+					cur = cur->right;
 				}
 				else //找到了待删除结点
 				{
@@ -913,12 +916,12 @@ namespace STL
 								root->parent = nullptr;
 								root->color = BLACK; //根结点为黑色
 							}
-							operator delete cur; //删除原根结点
+							free(cur); //删除原根结点
 							return true;
 						}
 						else
 						{
-							delParentPos = cparent; //标记实际删除结点的父结点
+							delParentPos = cur_parent; //标记实际删除结点的父结点
 							delPos = cur; //标记实际删除的结点
 						}
 						break; //进行红黑树的调整以及结点的实际删除
@@ -933,12 +936,12 @@ namespace STL
 								root->parent = nullptr;
 								root->color = BLACK; //根结点为黑色
 							}
-							operator delete cur; //删除原根结点
+							free(cur); //删除原根结点
 							return true;
 						}
 						else
 						{
-							delParentPos = cparent; //标记实际删除结点的父结点
+							delParentPos = cur_parent; //标记实际删除结点的父结点
 							delPos = cur; //标记实际删除的结点
 						}
 						break; //进行红黑树的调整以及结点的实际删除
@@ -1009,7 +1012,7 @@ namespace STL
 								}
 								//需要继续处理
 								delPos = delParentPos;
-								delParentPos = delPos->get_parent();
+								delParentPos = delPos->parent;
 							}
 							else
 							{
@@ -1023,7 +1026,7 @@ namespace STL
 									brother = delParentPos->right; //更新brother（否则执行下面情况四的代码会出错）
 								}
 								//情况四：brother为黑色，且其右孩子是红色结点
-								brother->colordelParentPos->color;
+								brother->color = RED;
 								delParentPos->color = BLACK;
 								brother->right->color = BLACK;
 								left_rotate(delParentPos);
@@ -1054,25 +1057,27 @@ namespace STL
 								}
 								//需要继续处理
 								delPos = delParentPos;
-								delParentPos = delPos->get_parent();
+								delParentPos = delPos->parent;
 							}
 							else
 							{
 								//情况三：brother为黑色，且其右孩子是红色结点，左孩子是黑色结点或为空
 								if ((brother->left == nullptr) || (brother->left->color == BLACK))
 								{
-									brother->get_right->color = BLACK;
+									brother->right->color = BLACK;
 									brother->color = RED;
 									left_rotate(brother);
 									//需要继续处理
 									brother = delParentPos->left; //更新brother（否则执行下面情况四的代码会出错）
 								}
 								//情况四：brother为黑色，且其左孩子是红色结点
-								brother->colordelParentPos->color;
-								delParentPos->color = BLACK;
-								brother->left->color = BLACK;
-								right_rotate(delParentPos);
-								break; //情况四执行完毕后调整一定结束
+								else if(!brother->color);
+								{
+									delParentPos->color = BLACK;
+									brother->left->color = BLACK;
+									right_rotate(delParentPos);
+									break; //情况四执行完毕后调整一定结束
+								}
 							}
 						}
 					}
@@ -1083,38 +1088,38 @@ namespace STL
 			{
 				if (del == delP->left) //实际删除结点是其父结点的左孩子
 				{
-					delP->set_left(del->right);
+					delP->left = (del->right);
 					if (del->right)
-						del->right->parent = delp;
+						del->right->parent = delP;
 				}
 				else //实际删除结点是其父结点的右孩子
 				{
-					delP->set_right(del->right);
+					delP->right = (del->right);
 					if (del->right)
-						del->right->parent = delp;
+						del->right->parent = delP;
 				}
 			}
 			else //实际删除结点的右子树为空
 			{
 				if (del == delP->left) //实际删除结点是其父结点的左孩子
 				{
-					delP->set_left(del->left);
+					delP->left = (del->left);
 					if (del->left)
 						del->left->parent = delP;
 				}
 				else //实际删除结点是其父结点的右孩子
 				{
-					delP->set_right(del->left);
+					delP->right = (del->left);
 					if (del->left)
 						del->left->parent = delP;
 				}
 			}
-			operator delete del; //实际删除结点
+			free(del); //实际删除结点
 			return true;
 		}
 		void clear()
 		{
-			operator delete root;
+			free(root);
 			root = nullptr;
 		}
 		bool empty()
@@ -1184,7 +1189,7 @@ namespace STL
 	private:
 		bool root_is_black()
 		{
-			return root->color == black;
+			return root->color == BLACK;
 		}
 		bool is_son_self_red(node*& insert)
 		{
@@ -1206,11 +1211,11 @@ namespace STL
 			//建立subRL与parent之间的联系
 			cparent->right = subRL;
 			if (subRL)
-				subRL->set_parent = cparent;
+				subRL->parent = cparent;
 
 			//建立parent与subR之间的联系
-			subR->set_left(parent);
-			parent->parent = subR;
+			subR->left = (cparent);
+			cparent->parent = subR;
 
 			//建立subR与parentParent之间的联系
 			if (cparentParent == nullptr)
@@ -1239,7 +1244,7 @@ namespace STL
 			node* cparentParent = cparent->parent;
 
 			//建立subLR与parent之间的联系
-			parent->left = subLR;
+			cparent->left = subLR;
 			if (subLR)
 				subLR->parent = cparent;
 
@@ -1261,9 +1266,9 @@ namespace STL
 				}
 				else
 				{
-					parentParent->right = subL;
+					cparentParent->right = subL;
 				}
-				subL->parent = parentParent;
+				subL->parent = cparentParent;
 			}
 		}
 

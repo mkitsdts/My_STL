@@ -78,6 +78,7 @@ namespace STL
 		using value_type = T;
 		using pointer = T*;
 	public:
+		
 	};
 }
 
