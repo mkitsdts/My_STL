@@ -11,23 +11,30 @@ namespace STL
 		using value_type = T;
 		using pointer = T*;
 	public:
-		explicit my_shared_ptr() :_ptr(nullptr), _count(new std::atomic<int>(1))
+		explicit my_shared_ptr() :_ptr(nullptr), _count(new std::atomic<int>(0))
 		{
 		}
 		explicit my_shared_ptr(pointer ptr) :_ptr(ptr), _count(new std::atomic<int>(1))
 		{
 		}
+		explicit my_shared_ptr(my_shared_ptr& other) : _ptr(other._ptr), _count(other._count)
+		{
+			if(_ptr)
+				++(*_count);
+		}
 		explicit my_shared_ptr(const my_shared_ptr& other) :_ptr(other._ptr), _count(other._count)
 		{
 			if (_ptr)
-			{
 				++(*_count);
-			}
 		}
 		~my_shared_ptr()
 		{
-			delete _ptr;
-			delete _count;
+			--(*_count);
+			if(!(*_count))
+			{
+				delete _count;
+				delete _ptr;
+			}
 		}
 		my_shared_ptr<T>& operator=(my_shared_ptr<T>& other)
 		{
@@ -61,11 +68,13 @@ namespace STL
 		pointer _ptr;
 		std::atomic<int>* _count;	
 	};
+
 	template <class T>
 	my_shared_ptr<T> make_shared()
 	{
 		return my_shared_ptr<T>();
 	}
+	
 	template <class T>
 	my_shared_ptr<T> make_shared(T* ptr)
 	{
