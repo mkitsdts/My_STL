@@ -58,7 +58,7 @@ namespace STL
 				*add_needed_free_list = (obj *)((obj *)chunk + size);
 				next_obj = (obj *)((obj *)chunk + size);
 				//将取出的多余的空间加入到相应的free list里面
-				for (int i = 1;; ++i)
+				for (size_t i = 1;; ++i)
 				{
 					current_obj = next_obj;
 					next_obj = (obj *)((char *)next_obj + size);
@@ -86,7 +86,7 @@ namespace STL
 			
 			if (bytes_left >= total)
 			{
-				//内存池剩余空间满足需
+				//内存池剩余空间满足需要
 				result = start_free;
 				start_free = start_free + total;
 				return result;
@@ -112,7 +112,7 @@ namespace STL
 					obj** appropriate_free_list = free_list + FREELIST_INDEX(bytes_left);
 					((obj*)start_free)->free_list_link = *appropriate_free_list;
 					*appropriate_free_list = (obj*)(start_free);
-					//有点复杂，不好理�?
+					//有点复杂，不好理解
 				}
 				//尝试申请内存
 				start_free = static_cast<char*>(operator new(need_bytes));
@@ -122,14 +122,14 @@ namespace STL
 					//将内存池里的内存全部分配到free_list
 					obj** temp_free_list = nullptr;
 					obj* temp = nullptr;
-					for (int i = 0; i < NFREELIST; ++i)
+					for (size_t i = 0; i < NFREELIST; ++i)
 					{
 						temp_free_list = free_list + i;
 						temp = *temp_free_list;
 						if (temp != nullptr)
 						{
 							*temp_free_list = temp->free_list_link;
-							start_free = (char *)temp;
+							start_free = (char*)temp;
 							end_free = start_free + ALIGN * i;
 							return chunk_alloc(size, nobjs);
 						}
@@ -149,7 +149,7 @@ namespace STL
 		static void* allocate(size_t size)
 		{
 			//申请size个字节的内存
-			//如果大于申请的内�?128字节，直接向系统申请
+			//如果大于申请的内存128字节，直接向系统申请
 			if (size > MAX_BYTES)
 			{
 				return operator new(size);
@@ -174,7 +174,7 @@ namespace STL
 		{
 			if (bytes > MAX_BYTES)
 			{
-				operator delete(ptr);
+				free(ptr);
 			}
 			else
 			{
@@ -185,7 +185,7 @@ namespace STL
 			}
 		}
 		//重新分配内存
-		static void* reallocate(void* ptr, size_t old_sz, size_t new_sz)
+		static void* reallocate(void*& ptr, size_t old_sz, size_t new_sz)
 		{
 			deallocate(ptr, old_sz);
 			ptr = allocate(new_sz);
