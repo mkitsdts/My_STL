@@ -1,5 +1,4 @@
-#ifndef MY_STL_PAIR_H
-#define MY_STL_PAIR_H
+#pragma once
 
 namespace STL
 {
@@ -9,19 +8,19 @@ namespace STL
 		using first_type = T1;
 		using second_type = T2;
 
-		first_type _first;
-		first_type _second;
+		first_type first;
+		first_type second;
 
-		pair() :_first(first_type()), _second(second_type())
+		pair() :first(first_type()), second(second_type())
 		{
 		}
-		pair(const first_type& a, const second_type& b) :_first(a), _second(b)
+		pair(const first_type& a, const second_type& b) :first(a), second(b)
 		{
 		}
-		pair(first_type&& a, second_type&& b) :_first(a), _second(b)
+		pair(first_type&& a, second_type&& b) :first(a), second(b)
 		{
 		}
-		pair(const pair& p) :_first(p._first), _second(p._second)
+		pair(const pair& p) :first(p.first), second(p.second)
 		{
 		}
 		pair& operator=(const pair& p)
@@ -38,23 +37,6 @@ namespace STL
 		{
 			return !(*this == p);
 		}
-
-		first_type& first()
-		{
-			return _first;
-		}
-		const first_type& first() const
-		{
-			return _first;
-		}
-		second_type& second()
-		{
-			return _second;
-		}
-		const second_type& second() const
-		{
-			return _second;
-		}
 	};
 
 	template<class T1, class T2>
@@ -63,5 +45,3 @@ namespace STL
 		return pair<T1, T2>(first, second);
 	}
 }
-
-#endif // !MY_STL_PAIR_H

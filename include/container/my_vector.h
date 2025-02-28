@@ -2,10 +2,9 @@
 // Created by mkitsdts on 14/6/2024.
 //
 
-#ifndef MY_STL_MY_VECTOR_H
-#define MY_STL_MY_VECTOR_H
-#include "../allocator/Allocator.h"
-#include "iostream"
+#pragma once
+#include "allocator/Allocator.h"
+
 namespace STL
 {
 	template <class value_type>
@@ -169,7 +168,6 @@ namespace STL
 			if (_begin != nullptr)
 			{
 				alloc::destroy(_begin, _end);
-				std::cout << "when destory, _capacity = " << _capacity << std::endl;
 				alloc::deallocate(_begin, _capacity * sizeof(value_type));
 			}
 			_begin = nullptr;
@@ -255,8 +253,6 @@ namespace STL
 			++_size;
 			_current = _begin + _size - 1;
 			*_current = value;
-			std::cout << "_begin: " << *_begin << std::endl;
-			std::cout << "_current: " << *_current << std::endl;
 			
 		}
 		void pop_back()
@@ -310,8 +306,6 @@ namespace STL
 
 		void resize(size_t newSize)
 		{
-			std::cout << "申请的个数：" << newSize << std::endl;
-
 			value_type* tmp_begin = alloc::allocate(newSize);	
 			value_type* tmp_origin_begin = _begin;
 			_begin = tmp_begin;
@@ -325,12 +319,8 @@ namespace STL
 				_current = _begin + _size - 1;
 			}
 			_capacity = newSize;
-			std::cout << "tmp_begin = " << tmp_begin << std::endl;
-			std::cout << "_current = " << _current << std::endl;
-			std::cout << "_end = " << _end << std::endl;
 			if (tmp_origin_begin != nullptr)
 			{
-				std::cout << "正在进行拷贝" << std::endl;
 				for (size_t i = 0; i < _size; ++i)
 				{
 					*(_begin + i) = *(tmp_origin_begin + i);
@@ -339,7 +329,6 @@ namespace STL
 				{
 					*(_begin + i) = value_type{};
 				}
-				std::cout << "拷贝结束" << std::endl;
 			}
 			if (tmp_origin_begin != nullptr)
 			{
@@ -348,8 +337,6 @@ namespace STL
 		}
 		void resize(size_t newSize, value_type value)
 		{
-			std::cout << "申请的个数：" << newSize << std::endl;
-
 			value_type* tmp_begin = alloc::allocate(newSize);
 			value_type* tmp_origin_begin = _begin;
 			_begin = tmp_begin;
@@ -363,12 +350,8 @@ namespace STL
 				_current = _begin + _size - 1;
 			}
 			_capacity = newSize;
-			std::cout << "tmp_begin = " << tmp_begin << std::endl;
-			std::cout << "_current = " << _current << std::endl;
-			std::cout << "_end = " << _end << std::endl;
 			if (tmp_origin_begin != nullptr)
 			{
-				std::cout << "正在进行拷贝" << std::endl;
 				for (size_t i = 0; i < _size; ++i)
 				{
 					*(_begin + i) = *(tmp_origin_begin + i);
@@ -377,7 +360,6 @@ namespace STL
 				{
 					*(_begin + i) = value;
 				}
-				std::cout << "拷贝结束" << std::endl;
 			}
 			if (tmp_origin_begin != nullptr)
 			{
@@ -442,6 +424,3 @@ namespace STL
 		size_t _capacity;
 	};
 }
-
-
-#endif //MY_STL_MY_VECTOR_H

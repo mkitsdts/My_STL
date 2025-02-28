@@ -1,7 +1,5 @@
 #pragma once
-#ifndef MY_STL_RED_BLACK_TREE
-#define MY_STL_RED_BLACK_TREE
-#include "../allocator/Allocator.h"
+#include "allocator/Allocator.h"
 
 constexpr auto RED = true;
 constexpr auto BLACK = false;
@@ -15,10 +13,10 @@ namespace STL
 		struct node
 		{
 		public:
-			node(value_type& value) :parent(nullptr), left(nullptr), right(nullptr), data(value_type()), color(BLACK)//¸ù½Úµã
+			node(value_type& value) :parent(nullptr), left(nullptr), right(nullptr), data(value_type()), color(BLACK)//ï¿½ï¿½ï¿½Úµï¿½
 			{
 			}
-			node(node* parent_value, value_type& value) :parent(parent_value), left(nullptr), right(nullptr), data(value), color(RED)//ÆÕÍ¨½Úµã
+			node(node* parent_value, value_type& value) :parent(parent_value), left(nullptr), right(nullptr), data(value), color(RED)//ï¿½ï¿½Í¨ï¿½Úµï¿½
 			{
 			}
 			~node()
@@ -62,11 +60,11 @@ namespace STL
 		}
 		void insert(value_type& value)
 		{
-			if (root == nullptr) //ÈôºìºÚÊ÷Îª¿ÕÊ÷£¬Ôò²åÈë½áµãÖ±½Ó×÷Îª¸ù½áµã
+			if (root == nullptr) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½
 			{
 				root = new node(value);
 			}
-			//ÕÒµ½´ý²åÈëÎ»ÖÃ
+			//ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 			node* cur = root;
 			node* cur_parent = nullptr;
 			while (cur)
@@ -87,103 +85,103 @@ namespace STL
 				}
 			}
 
-			cur = new node(cur_parent,value); //¸ù¾ÝËù¸øÖµ¹¹ÔìÒ»¸ö½áµã
-			node* newnode = cur; //¼ÇÂ¼½áµã£¨±ãÓÚºóÐò·µ»Ø
+			cur = new node(cur_parent,value); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½
+			node* newnode = cur; //ï¿½ï¿½Â¼ï¿½ï¿½ã£¨ï¿½ï¿½ï¿½Úºï¿½ï¿½ò·µ»ï¿½
 			if (value < cur_parent->data)
 			{
-				//²åÈëµ½parentµÄ×ó±ß
+				//ï¿½ï¿½ï¿½ëµ½parentï¿½ï¿½ï¿½ï¿½ï¿½
 				cur_parent->left = cur;
 			}
 			else
 			{
-				//²åÈëµ½parentµÄÓÒ±ß
+				//ï¿½ï¿½ï¿½ëµ½parentï¿½ï¿½ï¿½Ò±ï¿½
 				cur_parent->right = cur;
 			}
 
-			//¶ÔºìºÚÊ÷½øÐÐµ÷Õû
-			while (is_son_self_red(cur_parent))//¸¸½áµãºÍ´ý²åÈë½ÚµãÊÇºìÉ«
+			//ï¿½Ôºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½
+			while (is_son_self_red(cur_parent))//ï¿½ï¿½ï¿½ï¿½ï¿½Í´ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½Çºï¿½É«
 			{
-				node* cur_grandfather = cur_parent->parent; //parentÊÇºìÉ«£¬ÔòÆä¸¸½áµãÒ»¶¨´æÔÚ
-				if (cur_parent == cur_grandfather->left) //parentÊÇgrandfatherµÄ×óº¢×Ó
+				node* cur_grandfather = cur_parent->parent; //parentï¿½Çºï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				if (cur_parent == cur_grandfather->left) //parentï¿½ï¿½grandfatherï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				{
-					node* cur_uncle = cur_grandfather->right; //uncleÊÇgrandfatherµÄÓÒº¢×Ó
-					if (cur_uncle && cur_uncle->color == RED) //uncle´æÔÚÇÒÎªºì
+					node* cur_uncle = cur_grandfather->right; //uncleï¿½ï¿½grandfatherï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½
+					if (cur_uncle && cur_uncle->color == RED) //uncleï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 					{
-						//ÑÕÉ«µ÷Õû
+						//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
 						cur_parent->color = BLACK;
 						cur_uncle->color = BLACK;
 						cur_grandfather->color = RED;
 
-						//¼ÌÐøÍùÉÏ´¦Àí
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½
 						cur = cur_grandfather;
 						cur_parent = cur->parent;
 					}
-					else //uncleÎªºÚ
+					else //uncleÎªï¿½ï¿½
 					{
-						//×ó×óÇé¿ö
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						if (cur == cur_parent->left)
 						{
-							right_rotate(cur_grandfather); //ÓÒµ¥Ðý
-							//ÑÕÉ«µ÷Õû
+							right_rotate(cur_grandfather); //ï¿½Òµï¿½ï¿½ï¿½
+							//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
 							cur_grandfather->color = RED;
 							cur_parent->color = BLACK;
 						}
-						//×óÓÒÇé¿ö
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						else //cur == parent->right
 						{
-							LR_rotate(cur_grandfather); //×óÓÒË«Ðý
-							//ÑÕÉ«µ÷Õû
+							LR_rotate(cur_grandfather); //ï¿½ï¿½ï¿½ï¿½Ë«ï¿½ï¿½
+							//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
 							cur_grandfather->color = RED;
 							cur_parent->color = BLACK;
 						}
-						break; //×ÓÊ÷Ðý×ªºó£¬¸Ã×ÓÊ÷µÄ¸ù±ä³ÉÁËºÚÉ«£¬ÎÞÐè¼ÌÐøÍùÉÏ½øÐÐ´¦Àí
+						break; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ó£¬¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½ï¿½Ëºï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½
 					}
 				}
-				else //parentÊÇgrandfatherµÄÓÒº¢×Ó
+				else //parentï¿½ï¿½grandfatherï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½
 				{
 					node* cur_uncle = cur_grandfather->left;
 					if (cur_uncle && cur_uncle->color == RED)
 					{
-						//ÑÕÉ«µ÷Õû
+						//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
 						cur_uncle->color = BLACK;
 						cur_parent->color = BLACK;
 						cur_grandfather->color = RED;
-						//¼ÌÐøÍùÉÏ´¦Àí
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½
 						cur = cur_grandfather;
 						cur_parent = cur->parent;
 					}
 					else
 					{
-						//ÓÒ×óÇé¿ö
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						if (cur == cur_parent->left)
 						{
-							RL_rotate(cur_grandfather); //ÓÒ×óË«Ðý
+							RL_rotate(cur_grandfather); //ï¿½ï¿½ï¿½ï¿½Ë«ï¿½ï¿½
 
-							//ÑÕÉ«µ÷Õû
+							//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
 							cur->color = BLACK;
 							cur_grandfather->color = RED;
 						}
-						//ÓÒÓÒÇé¿ö
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						else //cur == parent->right
 						{
-							left_rotate(cur_grandfather); //×óµ¥Ðý
-							//ÑÕÉ«µ÷Õû
+							left_rotate(cur_grandfather); //ï¿½ï¿½ï¿½ï¿½
+							//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
 							cur_grandfather->color = RED;
 							cur_parent->color = BLACK;
 						}
-						break; //×ÓÊ÷Ðý×ªºó£¬¸Ã×ÓÊ÷µÄ¸ù±ä³ÉÁËºÚÉ«£¬ÎÞÐè¼ÌÐøÍùÉÏ½øÐÐ´¦Àí
+						break; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ó£¬¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½ï¿½Ëºï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½
 					}
 				}
 			}
-			root->color = BLACK; //¸ù½áµãµÄÑÕÉ«ÎªºÚÉ«£¨¿ÉÄÜ±»Çé¿öÒ»±ä³ÉÁËºìÉ«£¬ÐèÒª±ä»ØºÚÉ«£©
+			root->color = BLACK; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«Îªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½Ü±ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ëºï¿½É«ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Øºï¿½É«ï¿½ï¿½
 		}
 		void insert(const value_type& value)
 		{
-			if (root == nullptr) //ÈôºìºÚÊ÷Îª¿ÕÊ÷£¬Ôò²åÈë½áµãÖ±½Ó×÷Îª¸ù½áµã
+			if (root == nullptr) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½
 			{
 				root = new node(value);
 			}
-			//ÕÒµ½´ý²åÈëÎ»ÖÃ
+			//ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 			node* cur = root;
 			node* cur_parent = nullptr;
 			while (cur)
@@ -204,103 +202,103 @@ namespace STL
 				}
 			}
 
-			cur = new node(cur_parent, value); //¸ù¾ÝËù¸øÖµ¹¹ÔìÒ»¸ö½áµã
-			node* newnode = cur; //¼ÇÂ¼½áµã£¨±ãÓÚºóÐò·µ»Ø
+			cur = new node(cur_parent, value); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½
+			node* newnode = cur; //ï¿½ï¿½Â¼ï¿½ï¿½ã£¨ï¿½ï¿½ï¿½Úºï¿½ï¿½ò·µ»ï¿½
 			if (value < cur_parent->data)
 			{
-				//²åÈëµ½parentµÄ×ó±ß
+				//ï¿½ï¿½ï¿½ëµ½parentï¿½ï¿½ï¿½ï¿½ï¿½
 				cur_parent->left = cur;
 			}
 			else
 			{
-				//²åÈëµ½parentµÄÓÒ±ß
+				//ï¿½ï¿½ï¿½ëµ½parentï¿½ï¿½ï¿½Ò±ï¿½
 				cur_parent->right = cur;
 			}
 
-			//¶ÔºìºÚÊ÷½øÐÐµ÷Õû
-			while (is_son_self_red(cur_parent))//¸¸½áµãºÍ´ý²åÈë½ÚµãÊÇºìÉ«
+			//ï¿½Ôºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½
+			while (is_son_self_red(cur_parent))//ï¿½ï¿½ï¿½ï¿½ï¿½Í´ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½Çºï¿½É«
 			{
-				node* cur_grandfather = cur_parent->parent; //parentÊÇºìÉ«£¬ÔòÆä¸¸½áµãÒ»¶¨´æÔÚ
-				if (cur_parent == cur_grandfather->left) //parentÊÇgrandfatherµÄ×óº¢×Ó
+				node* cur_grandfather = cur_parent->parent; //parentï¿½Çºï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				if (cur_parent == cur_grandfather->left) //parentï¿½ï¿½grandfatherï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				{
-					node* cur_uncle = cur_grandfather->right; //uncleÊÇgrandfatherµÄÓÒº¢×Ó
-					if (cur_uncle && cur_uncle->color == RED) //uncle´æÔÚÇÒÎªºì
+					node* cur_uncle = cur_grandfather->right; //uncleï¿½ï¿½grandfatherï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½
+					if (cur_uncle && cur_uncle->color == RED) //uncleï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 					{
-						//ÑÕÉ«µ÷Õû
+						//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
 						cur_parent->color = BLACK;
 						cur_uncle->color = BLACK;
 						cur_grandfather->color = RED;
 
-						//¼ÌÐøÍùÉÏ´¦Àí
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½
 						cur = cur_grandfather;
 						cur_parent = cur->parent;
 					}
-					else //uncleÎªºÚ
+					else //uncleÎªï¿½ï¿½
 					{
-						//×ó×óÇé¿ö
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						if (cur == cur_parent->left)
 						{
-							right_rotate(cur_grandfather); //ÓÒµ¥Ðý
-							//ÑÕÉ«µ÷Õû
+							right_rotate(cur_grandfather); //ï¿½Òµï¿½ï¿½ï¿½
+							//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
 							cur_grandfather->color = RED;
 							cur_parent->color = BLACK;
 						}
-						//×óÓÒÇé¿ö
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						else //cur == parent->right
 						{
-							LR_rotate(cur_grandfather); //×óÓÒË«Ðý
-							//ÑÕÉ«µ÷Õû
+							LR_rotate(cur_grandfather); //ï¿½ï¿½ï¿½ï¿½Ë«ï¿½ï¿½
+							//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
 							cur_grandfather->color = RED;
 							cur_parent->color = BLACK;
 						}
-						break; //×ÓÊ÷Ðý×ªºó£¬¸Ã×ÓÊ÷µÄ¸ù±ä³ÉÁËºÚÉ«£¬ÎÞÐè¼ÌÐøÍùÉÏ½øÐÐ´¦Àí
+						break; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ó£¬¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½ï¿½Ëºï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½
 					}
 				}
-				else //parentÊÇgrandfatherµÄÓÒº¢×Ó
+				else //parentï¿½ï¿½grandfatherï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½
 				{
 					node* cur_uncle = cur_grandfather->left;
 					if (cur_uncle && cur_uncle->color == RED)
 						{
-							//ÑÕÉ«µ÷Õû
+							//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
 							cur_uncle->color = BLACK;
 							cur_parent->color = BLACK;
 							cur_grandfather->color = RED;
-						//¼ÌÐøÍùÉÏ´¦Àí
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½
 						cur = cur_grandfather;
 						cur_parent = cur->parent;
 						}
 					else
 					{
-						//ÓÒ×óÇé¿ö
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						if (cur == cur_parent->left)
 						{
-							RL_rotate(cur_grandfather); //ÓÒ×óË«Ðý
+							RL_rotate(cur_grandfather); //ï¿½ï¿½ï¿½ï¿½Ë«ï¿½ï¿½
 
-							//ÑÕÉ«µ÷Õû
+							//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
 							cur->color = BLACK;
 							cur_grandfather->color = RED;
 						}
-						//ÓÒÓÒÇé¿ö
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						else //cur == parent->right
 						{
-							left_rotate(cur_grandfather); //×óµ¥Ðý
-							//ÑÕÉ«µ÷Õû
+							left_rotate(cur_grandfather); //ï¿½ï¿½ï¿½ï¿½
+							//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
 							cur_grandfather->color = RED;
 							cur_parent->color = BLACK;
 						}
-						break; //×ÓÊ÷Ðý×ªºó£¬¸Ã×ÓÊ÷µÄ¸ù±ä³ÉÁËºÚÉ«£¬ÎÞÐè¼ÌÐøÍùÉÏ½øÐÐ´¦Àí
+						break; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ó£¬¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½ï¿½Ëºï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½
 					}
 				}
 			}
-			root->color = BLACK; //¸ù½áµãµÄÑÕÉ«ÎªºÚÉ«£¨¿ÉÄÜ±»Çé¿öÒ»±ä³ÉÁËºìÉ«£¬ÐèÒª±ä»ØºÚÉ«£©
+			root->color = BLACK; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«Îªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½Ü±ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ëºï¿½É«ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Øºï¿½É«ï¿½ï¿½
 		}
 		void insert(value_type&& value)
 		{
-			if (root == nullptr) //ÈôºìºÚÊ÷Îª¿ÕÊ÷£¬Ôò²åÈë½áµãÖ±½Ó×÷Îª¸ù½áµã
+			if (root == nullptr) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½
 			{
 				root = new node(value);
 			}
-			//ÕÒµ½´ý²åÈëÎ»ÖÃ
+			//ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 			node* cur = root;
 			node* cur_parent = nullptr;
 			while (cur)
@@ -321,165 +319,165 @@ namespace STL
 				}
 			}
 
-			cur = new node(cur_parent, value); //¸ù¾ÝËù¸øÖµ¹¹ÔìÒ»¸ö½áµã
-			node* newnode = cur; //¼ÇÂ¼½áµã£¨±ãÓÚºóÐò·µ»Ø
+			cur = new node(cur_parent, value); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½
+			node* newnode = cur; //ï¿½ï¿½Â¼ï¿½ï¿½ã£¨ï¿½ï¿½ï¿½Úºï¿½ï¿½ò·µ»ï¿½
 			if (value < cur_parent->data)
 			{
-				//²åÈëµ½parentµÄ×ó±ß
+				//ï¿½ï¿½ï¿½ëµ½parentï¿½ï¿½ï¿½ï¿½ï¿½
 				cur_parent->left = cur;
 			}
 			else
 			{
-				//²åÈëµ½parentµÄÓÒ±ß
+				//ï¿½ï¿½ï¿½ëµ½parentï¿½ï¿½ï¿½Ò±ï¿½
 				cur_parent->right = cur;
 			}
 
-			//¶ÔºìºÚÊ÷½øÐÐµ÷Õû
-			while (is_son_self_red(cur_parent))//¸¸½áµãºÍ´ý²åÈë½ÚµãÊÇºìÉ«
+			//ï¿½Ôºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½
+			while (is_son_self_red(cur_parent))//ï¿½ï¿½ï¿½ï¿½ï¿½Í´ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½Çºï¿½É«
 			{
-				node* cur_grandfather = cur_parent->parent; //parentÊÇºìÉ«£¬ÔòÆä¸¸½áµãÒ»¶¨´æÔÚ
-				if (cur_parent == cur_grandfather->left) //parentÊÇgrandfatherµÄ×óº¢×Ó
+				node* cur_grandfather = cur_parent->parent; //parentï¿½Çºï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				if (cur_parent == cur_grandfather->left) //parentï¿½ï¿½grandfatherï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				{
-					node* cur_uncle = cur_grandfather->right; //uncleÊÇgrandfatherµÄÓÒº¢×Ó
-					if (cur_uncle && cur_uncle->color == RED) //uncle´æÔÚÇÒÎªºì
+					node* cur_uncle = cur_grandfather->right; //uncleï¿½ï¿½grandfatherï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½
+					if (cur_uncle && cur_uncle->color == RED) //uncleï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 					{
-						//ÑÕÉ«µ÷Õû
+						//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
 						cur_parent->color = BLACK;
 						cur_uncle->color = BLACK;
 						cur_grandfather->color = RED;
 
-						//¼ÌÐøÍùÉÏ´¦Àí
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½
 						cur = cur_grandfather;
 						cur_parent = cur->parent;
 					}
-					else //uncleÎªºÚ
+					else //uncleÎªï¿½ï¿½
 					{
-						//×ó×óÇé¿ö
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						if (cur == cur_parent->left)
 						{
-							right_rotate(cur_grandfather); //ÓÒµ¥Ðý
-							//ÑÕÉ«µ÷Õû
+							right_rotate(cur_grandfather); //ï¿½Òµï¿½ï¿½ï¿½
+							//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
 							cur_grandfather->color = RED;
 							cur_parent->color = BLACK;
 						}
-						//×óÓÒÇé¿ö
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						else //cur == parent->right
 						{
-							LR_rotate(cur_grandfather); //×óÓÒË«Ðý
-							//ÑÕÉ«µ÷Õû
+							LR_rotate(cur_grandfather); //ï¿½ï¿½ï¿½ï¿½Ë«ï¿½ï¿½
+							//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
 							cur_grandfather->color = RED;
 							cur_parent->color = BLACK;
 						}
-						break; //×ÓÊ÷Ðý×ªºó£¬¸Ã×ÓÊ÷µÄ¸ù±ä³ÉÁËºÚÉ«£¬ÎÞÐè¼ÌÐøÍùÉÏ½øÐÐ´¦Àí
+						break; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ó£¬¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½ï¿½Ëºï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½
 					}
 				}
-				else //parentÊÇgrandfatherµÄÓÒº¢×Ó
+				else //parentï¿½ï¿½grandfatherï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½
 				{
 					node* cur_uncle = cur_grandfather->left;
 					if (cur_uncle && cur_uncle->color == RED)
 						{
-							//ÑÕÉ«µ÷Õû
+							//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
 							cur_uncle->color = BLACK;
 							cur_parent->color = BLACK;
 							cur_grandfather->color = RED;
-						//¼ÌÐøÍùÉÏ´¦Àí
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½
 						cur = cur_grandfather;
 						cur_parent = cur->parent;
 						}
 					else
 					{
-						//ÓÒ×óÇé¿ö
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						if (cur == cur_parent->left)
 						{
-							RL_rotate(cur_grandfather); //ÓÒ×óË«Ðý
+							RL_rotate(cur_grandfather); //ï¿½ï¿½ï¿½ï¿½Ë«ï¿½ï¿½
 
-							//ÑÕÉ«µ÷Õû
+							//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
 							cur->color = BLACK;
 							cur_grandfather->color = RED;
 						}
-						//ÓÒÓÒÇé¿ö
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						else //cur == parent->right
 						{
-							left_rotate(cur_grandfather); //×óµ¥Ðý
-							//ÑÕÉ«µ÷Õû
+							left_rotate(cur_grandfather); //ï¿½ï¿½ï¿½ï¿½
+							//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
 							cur_grandfather->color = RED;
 							cur_parent->color = BLACK;
 						}
-						break; //×ÓÊ÷Ðý×ªºó£¬¸Ã×ÓÊ÷µÄ¸ù±ä³ÉÁËºÚÉ«£¬ÎÞÐè¼ÌÐøÍùÉÏ½øÐÐ´¦Àí
+						break; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ó£¬¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½ï¿½Ëºï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½
 					}
 				}
 			}
-			root->color = BLACK; //¸ù½áµãµÄÑÕÉ«ÎªºÚÉ«£¨¿ÉÄÜ±»Çé¿öÒ»±ä³ÉÁËºìÉ«£¬ÐèÒª±ä»ØºÚÉ«£©
+			root->color = BLACK; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«Îªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½Ü±ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ëºï¿½É«ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Øºï¿½É«ï¿½ï¿½
 		}
 
 		bool erase(value_type& value)
 		{
-			//ÓÃÓÚ±éÀú¶þ²æÊ÷
+			//ï¿½ï¿½ï¿½Ú±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			node* cur_parent = nullptr;
 			node* cur = root;
-			//ÓÃÓÚ±ê¼ÇÊµ¼ÊµÄ´ýÉ¾³ý½áµã¼°Æä¸¸½áµã
+			//ï¿½ï¿½ï¿½Ú±ï¿½ï¿½Êµï¿½ÊµÄ´ï¿½É¾ï¿½ï¿½ï¿½ï¿½ã¼°ï¿½ä¸¸ï¿½ï¿½ï¿½
 			node* delParentPos = nullptr;
 			node* delPos = nullptr;
 			while (cur)
 			{
-				if (value < cur->data) //Ëù¸økeyÖµÐ¡ÓÚµ±Ç°½áµãµÄkeyÖµ
+				if (value < cur->data) //ï¿½ï¿½ï¿½ï¿½keyÖµÐ¡ï¿½Úµï¿½Ç°ï¿½ï¿½ï¿½ï¿½keyÖµ
 				{
-					//Íù¸Ã½áµãµÄ×ó×ÓÊ÷×ß
+					//ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 					cur_parent = cur;
 					cur = cur->left;
 				}
-				else if (value > cur->data) //Ëù¸økeyÖµ´óÓÚµ±Ç°½áµãµÄkeyÖµ
+				else if (value > cur->data) //ï¿½ï¿½ï¿½ï¿½keyÖµï¿½ï¿½ï¿½Úµï¿½Ç°ï¿½ï¿½ï¿½ï¿½keyÖµ
 				{
-					//Íù¸Ã½áµãµÄÓÒ×ÓÊ÷×ß
+					//ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 					cur_parent = cur;
 					cur = cur->_right;
 				}
-				else //ÕÒµ½ÁË´ýÉ¾³ý½áµã
+				else //ï¿½Òµï¿½ï¿½Ë´ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½
 				{
-					if (cur->left == nullptr) //´ýÉ¾³ý½áµãµÄ×ó×ÓÊ÷Îª¿Õ
+					if (cur->left == nullptr) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 					{
-						if (cur == root) //´ýÉ¾³ý½áµãÊÇ¸ù½áµã
+						if (cur == root) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ï¿½ï¿½ï¿½
 						{
-							root = root->right; //ÈÃ¸ù½áµãµÄÓÒ×ÓÊ÷×÷ÎªÐÂµÄ¸ù½áµã
+							root = root->right; //ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ÂµÄ¸ï¿½ï¿½ï¿½ï¿½
 							if (root)
 							{
 								root->parent = nullptr;
-								root->color = BLACK; //¸ù½áµãÎªºÚÉ«
+								root->color = BLACK; //ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½É«
 							}
-							delete cur; //É¾³ýÔ­¸ù½áµã
+							delete cur; //É¾ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½ï¿½
 							return true;
 						}
 						else
 						{
-							delParentPos = cur_parent; //±ê¼ÇÊµ¼ÊÉ¾³ý½áµãµÄ¸¸½áµã
-							delPos = cur; //±ê¼ÇÊµ¼ÊÉ¾³ýµÄ½áµã
+							delParentPos = cur_parent; //ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½
+							delPos = cur; //ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½Ä½ï¿½ï¿½
 						}
-						break; //½øÐÐºìºÚÊ÷µÄµ÷ÕûÒÔ¼°½áµãµÄÊµ¼ÊÉ¾³ý
+						break; //ï¿½ï¿½ï¿½Ðºï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½
 					}
-					else if (cur->right == nullptr) //´ýÉ¾³ý½áµãµÄÓÒ×ÓÊ÷Îª¿Õ
+					else if (cur->right == nullptr) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 					{
-						if (cur == root) //´ýÉ¾³ý½áµãÊÇ¸ù½áµã
+						if (cur == root) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ï¿½ï¿½ï¿½
 						{
-							root = root->left; //ÈÃ¸ù½áµãµÄ×ó×ÓÊ÷×÷ÎªÐÂµÄ¸ù½áµã
+							root = root->left; //ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ÂµÄ¸ï¿½ï¿½ï¿½ï¿½
 							if (root)
 							{
 								root->parent = nullptr;
-								root->color = BLACK; //¸ù½áµãÎªºÚÉ«
+								root->color = BLACK; //ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½É«
 							}
-							delete cur; //É¾³ýÔ­¸ù½áµã
+							delete cur; //É¾ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½ï¿½
 							return true;
 						}
 						else
 						{
-							delParentPos = cur_parent; //±ê¼ÇÊµ¼ÊÉ¾³ý½áµãµÄ¸¸½áµã
-							delPos = cur; //±ê¼ÇÊµ¼ÊÉ¾³ýµÄ½áµã
+							delParentPos = cur_parent; //ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½
+							delPos = cur; //ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½Ä½ï¿½ï¿½
 						}
-						break; //½øÐÐºìºÚÊ÷µÄµ÷ÕûÒÔ¼°½áµãµÄÊµ¼ÊÉ¾³ý
+						break; //ï¿½ï¿½ï¿½Ðºï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½
 					}
-					else //´ýÉ¾³ý½áµãµÄ×óÓÒ×ÓÊ÷¾ù²»Îª¿Õ
+					else //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 					{
-						//Ìæ»»·¨É¾³ý
-						//Ñ°ÕÒ´ýÉ¾³ý½áµãÓÒ×ÓÊ÷µ±ÖÐkeyÖµ×îÐ¡µÄ½áµã×÷ÎªÊµ¼ÊÉ¾³ý½áµã
+						//ï¿½æ»»ï¿½ï¿½É¾ï¿½ï¿½
+						//Ñ°ï¿½Ò´ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½keyÖµï¿½ï¿½Ð¡ï¿½Ä½ï¿½ï¿½ï¿½ï¿½ÎªÊµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½
 						node* minParent = cur;
 						node* minRight = cur->right;
 						while (minRight->left)
@@ -487,50 +485,50 @@ namespace STL
 							minParent = minRight;
 							minRight = minRight->left;
 						}
-						cur->data = minRight->data; //½«´ýÉ¾³ý½áµãµÄkey¸ÄÎªminRightµÄkey
-						delParentPos = minParent; //±ê¼ÇÊµ¼ÊÉ¾³ý½áµãµÄ¸¸½áµã
-						delPos = minRight; //±ê¼ÇÊµ¼ÊÉ¾³ýµÄ½áµã
-						break; //½øÐÐºìºÚÊ÷µÄµ÷ÕûÒÔ¼°½áµãµÄÊµ¼ÊÉ¾³ý
+						cur->data = minRight->data; //ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½keyï¿½ï¿½ÎªminRightï¿½ï¿½key
+						delParentPos = minParent; //ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½
+						delPos = minRight; //ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½Ä½ï¿½ï¿½
+						break; //ï¿½ï¿½ï¿½Ðºï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½
 					}
 				}
 			}
-			if (delPos == nullptr) //delPosÃ»ÓÐ±»ÐÞ¸Ä¹ý£¬ËµÃ÷Ã»ÓÐÕÒµ½´ýÉ¾³ý½áµã
+			if (delPos == nullptr) //delPosÃ»ï¿½Ð±ï¿½ï¿½Þ¸Ä¹ï¿½ï¿½ï¿½Ëµï¿½ï¿½Ã»ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½
 			{
 				return false;
 			}
 
-			//¼ÇÂ¼´ýÉ¾³ý½áµã¼°Æä¸¸½áµã£¨ÓÃÓÚºóÐøÊµ¼ÊÉ¾³ý£©
+			//ï¿½ï¿½Â¼ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ã¼°ï¿½ä¸¸ï¿½ï¿½ã£¨ï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½
 			node* del = delPos;
 			node* delP = delParentPos;
 
-			//µ÷ÕûºìºÚÊ÷
-			if (delPos->color == BLACK) //É¾³ýµÄÊÇºÚÉ«½áµã
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			if (delPos->color == BLACK) //É¾ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½
 			{
-				if (delPos->left) //´ýÉ¾³ý½áµãÓÐÒ»¸öºìÉ«µÄ×óº¢×Ó£¨²»¿ÉÄÜÊÇºÚÉ«£©
+				if (delPos->left) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½
 				{
-					delPos->left->color = BLACK; //½«Õâ¸öºìÉ«µÄ×óº¢×Ó±äºÚ¼´¿É
+					delPos->left->color = BLACK; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½Ó±ï¿½Ú¼ï¿½ï¿½ï¿½
 				}
-				else if (delPos->right) //´ýÉ¾³ý½áµãÓÐÒ»¸öºìÉ«µÄÓÒº¢×Ó£¨²»¿ÉÄÜÊÇºÚÉ«£©
+				else if (delPos->right) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½Òºï¿½ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½
 				{
-					delPos->right->color = BLACK; //½«Õâ¸öºìÉ«µÄÓÒº¢×Ó±äºÚ¼´¿É
+					delPos->right->color = BLACK; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½Òºï¿½ï¿½Ó±ï¿½Ú¼ï¿½ï¿½ï¿½
 				}
-				else //´ýÉ¾³ý½áµãµÄ×óÓÒ¾ùÎª¿Õ
+				else //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¾ï¿½Îªï¿½ï¿½
 				{
-					while (delPos != root) //¿ÉÄÜÒ»Ö±µ÷Õûµ½¸ù½áµã
+					while (delPos != root) //ï¿½ï¿½ï¿½ï¿½Ò»Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 					{
-						if (delPos == delParentPos->left) //´ýÉ¾³ý½áµãÊÇÆä¸¸½áµãµÄ×óº¢×Ó
+						if (delPos == delParentPos->left) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						{
-							node* brother = delParentPos->right; //ÐÖµÜ½áµãÊÇÆä¸¸½áµãµÄÓÒº¢×Ó
-							//Çé¿öÒ»£ºbrotherÎªºìÉ«
+							node* brother = delParentPos->right; //ï¿½ÖµÜ½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½
+							//ï¿½ï¿½ï¿½Ò»ï¿½ï¿½brotherÎªï¿½ï¿½É«
 							if (brother->color = RED)
 							{
 								delParentPos->color = RED;
 								brother->color = BLACK;
 								left_rotate(delParentPos);
-								//ÐèÒª¼ÌÐø´¦Àí
-								brother = delParentPos->right; //¸üÐÂbrother£¨·ñÔòÔÚ±¾Ñ­»·ÖÐÖ´ÐÐÆäËûÇé¿öµÄ´úÂë»á³ö´í£©
+								//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+								brother = delParentPos->right; //ï¿½ï¿½ï¿½ï¿½brotherï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú±ï¿½Ñ­ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							}
-							//Çé¿ö¶þ£ºbrotherÎªºÚÉ«£¬ÇÒÆä×óÓÒº¢×Ó¶¼ÊÇºÚÉ«½áµã»òÎª¿Õ
+							//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½brotherÎªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½Ó¶ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 							if (((brother->left == nullptr) || (brother->left->color == BLACK))
 								&& ((brother->right == nullptr) || (brother->right->color == BLACK)))
 							{
@@ -540,42 +538,42 @@ namespace STL
 									delParentPos->color = BLACK;
 									break;
 								}
-								//ÐèÒª¼ÌÐø´¦Àí
+								//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 								delPos = delParentPos;
 								delParentPos = delPos->get_parent();
 							}
 							else
 							{
-								//Çé¿öÈý£ºbrotherÎªºÚÉ«£¬ÇÒÆä×óº¢×ÓÊÇºìÉ«½áµã£¬ÓÒº¢×ÓÊÇºÚÉ«½áµã»òÎª¿Õ
+								//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½brotherÎªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ã£¬ï¿½Òºï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 								if ((brother->right == nullptr) || (brother->right->color == BLACK))
 								{
 									brother->left->color = BLACK;
 									brother->color = RED;
 									right_rotate(brother);
-									//ÐèÒª¼ÌÐø´¦Àí
-									brother = delParentPos->right; //¸üÐÂbrother£¨·ñÔòÖ´ÐÐÏÂÃæÇé¿öËÄµÄ´úÂë»á³ö´í£©
+									//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+									brother = delParentPos->right; //ï¿½ï¿½ï¿½ï¿½brotherï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÄµÄ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 								}
-								//Çé¿öËÄ£ºbrotherÎªºÚÉ«£¬ÇÒÆäÓÒº¢×ÓÊÇºìÉ«½áµã
+								//ï¿½ï¿½ï¿½ï¿½Ä£ï¿½brotherÎªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½
 								brother->colordelParentPos->color;
 								delParentPos->color = BLACK;
 								brother->right->color = BLACK;
 								left_rotate(delParentPos);
-								break; //Çé¿öËÄÖ´ÐÐÍê±Ïºóµ÷ÕûÒ»¶¨½áÊø
+								break; //ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½Ïºï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							}
 						}
-						else //delPos == delParentPos->_right //´ýÉ¾³ý½áµãÊÇÆä¸¸½áµãµÄ×óº¢×Ó
+						else //delPos == delParentPos->_right //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						{
-							node* brother = delParentPos->left; //ÐÖµÜ½áµãÊÇÆä¸¸½áµãµÄ×óº¢×Ó
-							//Çé¿öÒ»£ºbrotherÎªºìÉ«
-							if (brother->color = RED) //brotherÎªºìÉ«
+							node* brother = delParentPos->left; //ï¿½ÖµÜ½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+							//ï¿½ï¿½ï¿½Ò»ï¿½ï¿½brotherÎªï¿½ï¿½É«
+							if (brother->color = RED) //brotherÎªï¿½ï¿½É«
 							{
 								delParentPos->color = RED;
 								brother->color = BLACK;
 								right_rotate(delParentPos);
-								//ÐèÒª¼ÌÐø´¦Àí
-								brother = delParentPos->left; //¸üÐÂbrother£¨·ñÔòÔÚ±¾Ñ­»·ÖÐÖ´ÐÐÆäËûÇé¿öµÄ´úÂë»á³ö´í£©
+								//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+								brother = delParentPos->left; //ï¿½ï¿½ï¿½ï¿½brotherï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú±ï¿½Ñ­ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							}
-							//Çé¿ö¶þ£ºbrotherÎªºÚÉ«£¬ÇÒÆä×óÓÒº¢×Ó¶¼ÊÇºÚÉ«½áµã»òÎª¿Õ
+							//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½brotherÎªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½Ó¶ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 							if (((brother->left == nullptr) || (brother->left->color == BLACK))
 								&& ((brother->right == nullptr) || (brother->right->color == BLACK)))
 							{
@@ -585,136 +583,136 @@ namespace STL
 									delParentPos->color = BLACK;
 									break;
 								}
-								//ÐèÒª¼ÌÐø´¦Àí
+								//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 								delPos = delParentPos;
 								delParentPos = delPos->get_parent();
 							}
 							else
 							{
-								//Çé¿öÈý£ºbrotherÎªºÚÉ«£¬ÇÒÆäÓÒº¢×ÓÊÇºìÉ«½áµã£¬×óº¢×ÓÊÇºÚÉ«½áµã»òÎª¿Õ
+								//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½brotherÎªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ã£¬ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 								if ((brother->left == nullptr) || (brother->left->color == BLACK))
 								{
 									brother->right->color = BLACK;
 									brother->color = RED;
 									left_rotate(brother);
-									//ÐèÒª¼ÌÐø´¦Àí
-									brother = delParentPos->left; //¸üÐÂbrother£¨·ñÔòÖ´ÐÐÏÂÃæÇé¿öËÄµÄ´úÂë»á³ö´í£©
+									//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+									brother = delParentPos->left; //ï¿½ï¿½ï¿½ï¿½brotherï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÄµÄ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 								}
-								//Çé¿öËÄ£ºbrotherÎªºÚÉ«£¬ÇÒÆä×óº¢×ÓÊÇºìÉ«½áµã
+								//ï¿½ï¿½ï¿½ï¿½Ä£ï¿½brotherÎªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½
 								else if (!brother->color);
 								{
 									delParentPos->color = BLACK;
 									brother->left->color = BLACK;
 									right_rotate(delParentPos);
-									break; //Çé¿öËÄÖ´ÐÐÍê±Ïºóµ÷ÕûÒ»¶¨½áÊø
+									break; //ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½Ïºï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 								}
 							}
 						}
 					}
 				}
 			}
-			//½øÐÐÊµ¼ÊÉ¾³ý
-			if (del->left == nullptr) //Êµ¼ÊÉ¾³ý½áµãµÄ×ó×ÓÊ÷Îª¿Õ
+			//ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½
+			if (del->left == nullptr) //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 			{
-				if (del == delP->left) //Êµ¼ÊÉ¾³ý½áµãÊÇÆä¸¸½áµãµÄ×óº¢×Ó
+				if (del == delP->left) //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				{
 					delP->set_left(del->right);
 					if (del->right)
 						del->right->parent = delP;
 				}
-				else //Êµ¼ÊÉ¾³ý½áµãÊÇÆä¸¸½áµãµÄÓÒº¢×Ó
+				else //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½
 				{
 					delP->set_right(del->right);
 					if (del->right)
 						del->right->parent = delP;
 				}
 			}
-			else //Êµ¼ÊÉ¾³ý½áµãµÄÓÒ×ÓÊ÷Îª¿Õ
+			else //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 			{
-				if (del == delP->left) //Êµ¼ÊÉ¾³ý½áµãÊÇÆä¸¸½áµãµÄ×óº¢×Ó
+				if (del == delP->left) //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				{
 					delP->set_left(del->left);
 					if (del->left)
 						del->left->parent = delP;
 				}
-				else //Êµ¼ÊÉ¾³ý½áµãÊÇÆä¸¸½áµãµÄÓÒº¢×Ó
+				else //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½
 				{
 					delP->set_right(del->left);
 					if (del->left)
 						del->left->parent = delP;
 				}
 			}
-			free(del); //Êµ¼ÊÉ¾³ý½áµã
+			free(del); //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½
 			return true;
 		}
 		bool erase(const value_type& value)
 		{
-			//ÓÃÓÚ±éÀú¶þ²æÊ÷
+			//ï¿½ï¿½ï¿½Ú±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			node* cur_parent = nullptr;
 			node* cur = root;
-			//ÓÃÓÚ±ê¼ÇÊµ¼ÊµÄ´ýÉ¾³ý½áµã¼°Æä¸¸½áµã
+			//ï¿½ï¿½ï¿½Ú±ï¿½ï¿½Êµï¿½ÊµÄ´ï¿½É¾ï¿½ï¿½ï¿½ï¿½ã¼°ï¿½ä¸¸ï¿½ï¿½ï¿½
 			node* delParentPos = nullptr;
 			node* delPos = nullptr;
 			while (cur)
 			{
-				if (value < cur->data) //Ëù¸økeyÖµÐ¡ÓÚµ±Ç°½áµãµÄkeyÖµ
+				if (value < cur->data) //ï¿½ï¿½ï¿½ï¿½keyÖµÐ¡ï¿½Úµï¿½Ç°ï¿½ï¿½ï¿½ï¿½keyÖµ
 				{
-					//Íù¸Ã½áµãµÄ×ó×ÓÊ÷×ß
+					//ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 					cur_parent = cur;
 					cur = cur->left;
 				}
-				else if (value > cur->data) //Ëù¸økeyÖµ´óÓÚµ±Ç°½áµãµÄkeyÖµ
+				else if (value > cur->data) //ï¿½ï¿½ï¿½ï¿½keyÖµï¿½ï¿½ï¿½Úµï¿½Ç°ï¿½ï¿½ï¿½ï¿½keyÖµ
 				{
-					//Íù¸Ã½áµãµÄÓÒ×ÓÊ÷×ß
+					//ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 					cur_parent = cur;
 					cur = cur->_right;
 				}
-				else //ÕÒµ½ÁË´ýÉ¾³ý½áµã
+				else //ï¿½Òµï¿½ï¿½Ë´ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½
 				{
-					if (cur->left == nullptr) //´ýÉ¾³ý½áµãµÄ×ó×ÓÊ÷Îª¿Õ
+					if (cur->left == nullptr) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 					{
-						if (cur == root) //´ýÉ¾³ý½áµãÊÇ¸ù½áµã
+						if (cur == root) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ï¿½ï¿½ï¿½
 						{
-							root = root->right; //ÈÃ¸ù½áµãµÄÓÒ×ÓÊ÷×÷ÎªÐÂµÄ¸ù½áµã
+							root = root->right; //ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ÂµÄ¸ï¿½ï¿½ï¿½ï¿½
 							if (root)
 							{
 								root->parent = nullptr;
-								root->color = BLACK; //¸ù½áµãÎªºÚÉ«
+								root->color = BLACK; //ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½É«
 							}
-							free(cur); //É¾³ýÔ­¸ù½áµã
+							free(cur); //É¾ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½ï¿½
 							return true;
 						}
 						else
 						{
-							delParentPos = cur_parent; //±ê¼ÇÊµ¼ÊÉ¾³ý½áµãµÄ¸¸½áµã
-							delPos = cur; //±ê¼ÇÊµ¼ÊÉ¾³ýµÄ½áµã
+							delParentPos = cur_parent; //ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½
+							delPos = cur; //ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½Ä½ï¿½ï¿½
 						}
-						break; //½øÐÐºìºÚÊ÷µÄµ÷ÕûÒÔ¼°½áµãµÄÊµ¼ÊÉ¾³ý
+						break; //ï¿½ï¿½ï¿½Ðºï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½
 					}
-					else if (cur->right == nullptr) //´ýÉ¾³ý½áµãµÄÓÒ×ÓÊ÷Îª¿Õ
+					else if (cur->right == nullptr) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 					{
-						if (cur == root) //´ýÉ¾³ý½áµãÊÇ¸ù½áµã
+						if (cur == root) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ï¿½ï¿½ï¿½
 						{
-							root = root->left; //ÈÃ¸ù½áµãµÄ×ó×ÓÊ÷×÷ÎªÐÂµÄ¸ù½áµã
+							root = root->left; //ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ÂµÄ¸ï¿½ï¿½ï¿½ï¿½
 							if (root)
 							{
 								root->parent = nullptr;
-								root->color = BLACK; //¸ù½áµãÎªºÚÉ«
+								root->color = BLACK; //ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½É«
 							}
-							free(cur); //É¾³ýÔ­¸ù½áµã
+							free(cur); //É¾ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½ï¿½
 							return true;
 						}
 						else
 						{
-							delParentPos = cur_parent; //±ê¼ÇÊµ¼ÊÉ¾³ý½áµãµÄ¸¸½áµã
-							delPos = cur; //±ê¼ÇÊµ¼ÊÉ¾³ýµÄ½áµã
+							delParentPos = cur_parent; //ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½
+							delPos = cur; //ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½Ä½ï¿½ï¿½
 						}
-						break; //½øÐÐºìºÚÊ÷µÄµ÷ÕûÒÔ¼°½áµãµÄÊµ¼ÊÉ¾³ý
+						break; //ï¿½ï¿½ï¿½Ðºï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½
 					}
-					else //´ýÉ¾³ý½áµãµÄ×óÓÒ×ÓÊ÷¾ù²»Îª¿Õ
+					else //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 					{
-						//Ìæ»»·¨É¾³ý
-						//Ñ°ÕÒ´ýÉ¾³ý½áµãÓÒ×ÓÊ÷µ±ÖÐkeyÖµ×îÐ¡µÄ½áµã×÷ÎªÊµ¼ÊÉ¾³ý½áµã
+						//ï¿½æ»»ï¿½ï¿½É¾ï¿½ï¿½
+						//Ñ°ï¿½Ò´ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½keyÖµï¿½ï¿½Ð¡ï¿½Ä½ï¿½ï¿½ï¿½ï¿½ÎªÊµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½
 						node* minParent = cur;
 						node* minRight = cur->right;
 						while (minRight->left)
@@ -722,50 +720,50 @@ namespace STL
 							minParent = minRight;
 							minRight = minRight->left;
 						}
-						cur->data = minRight->data; //½«´ýÉ¾³ý½áµãµÄkey¸ÄÎªminRightµÄkey
-						delParentPos = minParent; //±ê¼ÇÊµ¼ÊÉ¾³ý½áµãµÄ¸¸½áµã
-						delPos = minRight; //±ê¼ÇÊµ¼ÊÉ¾³ýµÄ½áµã
-						break; //½øÐÐºìºÚÊ÷µÄµ÷ÕûÒÔ¼°½áµãµÄÊµ¼ÊÉ¾³ý
+						cur->data = minRight->data; //ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½keyï¿½ï¿½ÎªminRightï¿½ï¿½key
+						delParentPos = minParent; //ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½
+						delPos = minRight; //ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½Ä½ï¿½ï¿½
+						break; //ï¿½ï¿½ï¿½Ðºï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½
 					}
 				}
 			}
-			if (delPos == nullptr) //delPosÃ»ÓÐ±»ÐÞ¸Ä¹ý£¬ËµÃ÷Ã»ÓÐÕÒµ½´ýÉ¾³ý½áµã
+			if (delPos == nullptr) //delPosÃ»ï¿½Ð±ï¿½ï¿½Þ¸Ä¹ï¿½ï¿½ï¿½Ëµï¿½ï¿½Ã»ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½
 			{
 				return false;
 			}
 
-			//¼ÇÂ¼´ýÉ¾³ý½áµã¼°Æä¸¸½áµã£¨ÓÃÓÚºóÐøÊµ¼ÊÉ¾³ý£©
+			//ï¿½ï¿½Â¼ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ã¼°ï¿½ä¸¸ï¿½ï¿½ã£¨ï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½
 			node* del = delPos;
 			node* delP = delParentPos;
 
-			//µ÷ÕûºìºÚÊ÷
-			if (delPos->color == BLACK) //É¾³ýµÄÊÇºÚÉ«½áµã
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			if (delPos->color == BLACK) //É¾ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½
 			{
-				if (delPos->left) //´ýÉ¾³ý½áµãÓÐÒ»¸öºìÉ«µÄ×óº¢×Ó£¨²»¿ÉÄÜÊÇºÚÉ«£©
+				if (delPos->left) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½
 				{
-					delPos->left->color = BLACK; //½«Õâ¸öºìÉ«µÄ×óº¢×Ó±äºÚ¼´¿É
+					delPos->left->color = BLACK; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½Ó±ï¿½Ú¼ï¿½ï¿½ï¿½
 				}
-				else if (delPos->right) //´ýÉ¾³ý½áµãÓÐÒ»¸öºìÉ«µÄÓÒº¢×Ó£¨²»¿ÉÄÜÊÇºÚÉ«£©
+				else if (delPos->right) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½Òºï¿½ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½
 				{
-					delPos->right->color = BLACK; //½«Õâ¸öºìÉ«µÄÓÒº¢×Ó±äºÚ¼´¿É
+					delPos->right->color = BLACK; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½Òºï¿½ï¿½Ó±ï¿½Ú¼ï¿½ï¿½ï¿½
 				}
-				else //´ýÉ¾³ý½áµãµÄ×óÓÒ¾ùÎª¿Õ
+				else //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¾ï¿½Îªï¿½ï¿½
 				{
-					while (delPos != root) //¿ÉÄÜÒ»Ö±µ÷Õûµ½¸ù½áµã
+					while (delPos != root) //ï¿½ï¿½ï¿½ï¿½Ò»Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 					{
-						if (delPos == delParentPos->left) //´ýÉ¾³ý½áµãÊÇÆä¸¸½áµãµÄ×óº¢×Ó
+						if (delPos == delParentPos->left) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						{
-							node* brother = delParentPos->right; //ÐÖµÜ½áµãÊÇÆä¸¸½áµãµÄÓÒº¢×Ó
-							//Çé¿öÒ»£ºbrotherÎªºìÉ«
+							node* brother = delParentPos->right; //ï¿½ÖµÜ½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½
+							//ï¿½ï¿½ï¿½Ò»ï¿½ï¿½brotherÎªï¿½ï¿½É«
 							if (brother->color = RED)
 							{
 								delParentPos->color = RED;
 								brother->color = BLACK;
 								left_rotate(delParentPos);
-								//ÐèÒª¼ÌÐø´¦Àí
-								brother = delParentPos->right; //¸üÐÂbrother£¨·ñÔòÔÚ±¾Ñ­»·ÖÐÖ´ÐÐÆäËûÇé¿öµÄ´úÂë»á³ö´í£©
+								//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+								brother = delParentPos->right; //ï¿½ï¿½ï¿½ï¿½brotherï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú±ï¿½Ñ­ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							}
-							//Çé¿ö¶þ£ºbrotherÎªºÚÉ«£¬ÇÒÆä×óÓÒº¢×Ó¶¼ÊÇºÚÉ«½áµã»òÎª¿Õ
+							//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½brotherÎªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½Ó¶ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 							if (((brother->left == nullptr) || (brother->left->color == BLACK))
 								&& ((brother->right == nullptr) || (brother->right->color == BLACK)))
 							{
@@ -775,42 +773,42 @@ namespace STL
 									delParentPos->color = BLACK;
 									break;
 								}
-								//ÐèÒª¼ÌÐø´¦Àí
+								//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 								delPos = delParentPos;
 								delParentPos = delPos->get_parent();
 							}
 							else
 							{
-								//Çé¿öÈý£ºbrotherÎªºÚÉ«£¬ÇÒÆä×óº¢×ÓÊÇºìÉ«½áµã£¬ÓÒº¢×ÓÊÇºÚÉ«½áµã»òÎª¿Õ
+								//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½brotherÎªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ã£¬ï¿½Òºï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 								if ((brother->right == nullptr) || (brother->right->color == BLACK))
 								{
 									brother->left->color = BLACK;
 									brother->color = RED;
 									right_rotate(brother);
-									//ÐèÒª¼ÌÐø´¦Àí
-									brother = delParentPos->right; //¸üÐÂbrother£¨·ñÔòÖ´ÐÐÏÂÃæÇé¿öËÄµÄ´úÂë»á³ö´í£©
+									//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+									brother = delParentPos->right; //ï¿½ï¿½ï¿½ï¿½brotherï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÄµÄ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 								}
-								//Çé¿öËÄ£ºbrotherÎªºÚÉ«£¬ÇÒÆäÓÒº¢×ÓÊÇºìÉ«½áµã
+								//ï¿½ï¿½ï¿½ï¿½Ä£ï¿½brotherÎªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½
 								brother->colordelParentPos->color;
 								delParentPos->color = BLACK;
 								brother->right->color = BLACK;
 								left_rotate(delParentPos);
-								break; //Çé¿öËÄÖ´ÐÐÍê±Ïºóµ÷ÕûÒ»¶¨½áÊø
+								break; //ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½Ïºï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							}
 						}
-						else //delPos == delParentPos->_right //´ýÉ¾³ý½áµãÊÇÆä¸¸½áµãµÄ×óº¢×Ó
+						else //delPos == delParentPos->_right //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						{
-							node* brother = delParentPos->left; //ÐÖµÜ½áµãÊÇÆä¸¸½áµãµÄ×óº¢×Ó
-							//Çé¿öÒ»£ºbrotherÎªºìÉ«
-							if (brother->color = RED) //brotherÎªºìÉ«
+							node* brother = delParentPos->left; //ï¿½ÖµÜ½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+							//ï¿½ï¿½ï¿½Ò»ï¿½ï¿½brotherÎªï¿½ï¿½É«
+							if (brother->color = RED) //brotherÎªï¿½ï¿½É«
 							{
 								delParentPos->color = RED;
 								brother->color = BLACK;
 								right_rotate(delParentPos);
-								//ÐèÒª¼ÌÐø´¦Àí
-								brother = delParentPos->left; //¸üÐÂbrother£¨·ñÔòÔÚ±¾Ñ­»·ÖÐÖ´ÐÐÆäËûÇé¿öµÄ´úÂë»á³ö´í£©
+								//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+								brother = delParentPos->left; //ï¿½ï¿½ï¿½ï¿½brotherï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú±ï¿½Ñ­ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							}
-							//Çé¿ö¶þ£ºbrotherÎªºÚÉ«£¬ÇÒÆä×óÓÒº¢×Ó¶¼ÊÇºÚÉ«½áµã»òÎª¿Õ
+							//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½brotherÎªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½Ó¶ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 							if (((brother->left == nullptr) || (brother->left->color == BLACK))
 								&& ((brother->right == nullptr) || (brother->right->color == BLACK)))
 							{
@@ -820,136 +818,136 @@ namespace STL
 									delParentPos->color = BLACK;
 									break;
 								}
-								//ÐèÒª¼ÌÐø´¦Àí
+								//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 								delPos = delParentPos;
 								delParentPos = delPos->get_parent();
 							}
 							else
 							{
-								//Çé¿öÈý£ºbrotherÎªºÚÉ«£¬ÇÒÆäÓÒº¢×ÓÊÇºìÉ«½áµã£¬×óº¢×ÓÊÇºÚÉ«½áµã»òÎª¿Õ
+								//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½brotherÎªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ã£¬ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 								if ((brother->left == nullptr) || (brother->left->color == BLACK))
 								{
 									brother->get_right->color = BLACK;
 									brother->color = RED;
 									left_rotate(brother);
-									//ÐèÒª¼ÌÐø´¦Àí
-									brother = delParentPos->left; //¸üÐÂbrother£¨·ñÔòÖ´ÐÐÏÂÃæÇé¿öËÄµÄ´úÂë»á³ö´í£©
+									//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+									brother = delParentPos->left; //ï¿½ï¿½ï¿½ï¿½brotherï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÄµÄ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 								}
-								//Çé¿öËÄ£ºbrotherÎªºÚÉ«£¬ÇÒÆä×óº¢×ÓÊÇºìÉ«½áµã
+								//ï¿½ï¿½ï¿½ï¿½Ä£ï¿½brotherÎªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½
 								else if(!brother->color)
 								{
 									delParentPos->color = BLACK;
 									brother->left->color = BLACK;
 									right_rotate(delParentPos);
-									break; //Çé¿öËÄÖ´ÐÐÍê±Ïºóµ÷ÕûÒ»¶¨½áÊø
+									break; //ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½Ïºï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 								}
 							}
 						}
 					}
 				}
 			}
-			//½øÐÐÊµ¼ÊÉ¾³ý
-			if (del->left == nullptr) //Êµ¼ÊÉ¾³ý½áµãµÄ×ó×ÓÊ÷Îª¿Õ
+			//ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½
+			if (del->left == nullptr) //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 			{
-				if (del == delP->left) //Êµ¼ÊÉ¾³ý½áµãÊÇÆä¸¸½áµãµÄ×óº¢×Ó
+				if (del == delP->left) //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				{
 					delP->set_left(del->right);
 					if (del->right)
 						del->right->parent = delP;
 				}
-				else //Êµ¼ÊÉ¾³ý½áµãÊÇÆä¸¸½áµãµÄÓÒº¢×Ó
+				else //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½
 				{
 					delP->set_right(del->right);
 					if (del->right)
 						del->right->parent = delP;
 				}
 			}
-			else //Êµ¼ÊÉ¾³ý½áµãµÄÓÒ×ÓÊ÷Îª¿Õ
+			else //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 			{
-				if (del == delP->left) //Êµ¼ÊÉ¾³ý½áµãÊÇÆä¸¸½áµãµÄ×óº¢×Ó
+				if (del == delP->left) //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				{
 					delP->set_left(del->left);
 					if (del->left)
 						del->left->parent = delP;
 				}
-				else //Êµ¼ÊÉ¾³ý½áµãÊÇÆä¸¸½áµãµÄÓÒº¢×Ó
+				else //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½
 				{
 					delP->set_right(del->left);
 					if (del->left)
 						del->left->parent = delP;
 				}
 			}
-			free(del); //Êµ¼ÊÉ¾³ý½áµã
+			free(del); //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½
 			return true;
 		}
 		bool erase(value_type&& value)
 		{
-			//ÓÃÓÚ±éÀú¶þ²æÊ÷
+			//ï¿½ï¿½ï¿½Ú±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			node* cur_parent = nullptr;
 			node* cur = root;
-			//ÓÃÓÚ±ê¼ÇÊµ¼ÊµÄ´ýÉ¾³ý½áµã¼°Æä¸¸½áµã
+			//ï¿½ï¿½ï¿½Ú±ï¿½ï¿½Êµï¿½ÊµÄ´ï¿½É¾ï¿½ï¿½ï¿½ï¿½ã¼°ï¿½ä¸¸ï¿½ï¿½ï¿½
 			node* delParentPos = nullptr;
 			node* delPos = nullptr;
 			while (cur)
 			{
-				if (value < cur->data) //Ëù¸økeyÖµÐ¡ÓÚµ±Ç°½áµãµÄkeyÖµ
+				if (value < cur->data) //ï¿½ï¿½ï¿½ï¿½keyÖµÐ¡ï¿½Úµï¿½Ç°ï¿½ï¿½ï¿½ï¿½keyÖµ
 				{
-					//Íù¸Ã½áµãµÄ×ó×ÓÊ÷×ß
+					//ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 					cur_parent = cur;
 					cur = cur->left;
 				}
-				else if (value > cur->data) //Ëù¸økeyÖµ´óÓÚµ±Ç°½áµãµÄkeyÖµ
+				else if (value > cur->data) //ï¿½ï¿½ï¿½ï¿½keyÖµï¿½ï¿½ï¿½Úµï¿½Ç°ï¿½ï¿½ï¿½ï¿½keyÖµ
 				{
-					//Íù¸Ã½áµãµÄÓÒ×ÓÊ÷×ß
+					//ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 					cur_parent = cur;
 					cur = cur->right;
 				}
-				else //ÕÒµ½ÁË´ýÉ¾³ý½áµã
+				else //ï¿½Òµï¿½ï¿½Ë´ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½
 				{
-					if (cur->left == nullptr) //´ýÉ¾³ý½áµãµÄ×ó×ÓÊ÷Îª¿Õ
+					if (cur->left == nullptr) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 					{
-						if (cur == root) //´ýÉ¾³ý½áµãÊÇ¸ù½áµã
+						if (cur == root) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ï¿½ï¿½ï¿½
 						{
-							root = root->right; //ÈÃ¸ù½áµãµÄÓÒ×ÓÊ÷×÷ÎªÐÂµÄ¸ù½áµã
+							root = root->right; //ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ÂµÄ¸ï¿½ï¿½ï¿½ï¿½
 							if (root)
 							{
 								root->parent = nullptr;
-								root->color = BLACK; //¸ù½áµãÎªºÚÉ«
+								root->color = BLACK; //ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½É«
 							}
-							free(cur); //É¾³ýÔ­¸ù½áµã
+							free(cur); //É¾ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½ï¿½
 							return true;
 						}
 						else
 						{
-							delParentPos = cur_parent; //±ê¼ÇÊµ¼ÊÉ¾³ý½áµãµÄ¸¸½áµã
-							delPos = cur; //±ê¼ÇÊµ¼ÊÉ¾³ýµÄ½áµã
+							delParentPos = cur_parent; //ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½
+							delPos = cur; //ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½Ä½ï¿½ï¿½
 						}
-						break; //½øÐÐºìºÚÊ÷µÄµ÷ÕûÒÔ¼°½áµãµÄÊµ¼ÊÉ¾³ý
+						break; //ï¿½ï¿½ï¿½Ðºï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½
 					}
-					else if (cur->right == nullptr) //´ýÉ¾³ý½áµãµÄÓÒ×ÓÊ÷Îª¿Õ
+					else if (cur->right == nullptr) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 					{
-						if (cur == root) //´ýÉ¾³ý½áµãÊÇ¸ù½áµã
+						if (cur == root) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ï¿½ï¿½ï¿½
 						{
-							root = root->left; //ÈÃ¸ù½áµãµÄ×ó×ÓÊ÷×÷ÎªÐÂµÄ¸ù½áµã
+							root = root->left; //ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ÂµÄ¸ï¿½ï¿½ï¿½ï¿½
 							if (root)
 							{
 								root->parent = nullptr;
-								root->color = BLACK; //¸ù½áµãÎªºÚÉ«
+								root->color = BLACK; //ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½É«
 							}
-							free(cur); //É¾³ýÔ­¸ù½áµã
+							free(cur); //É¾ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½ï¿½
 							return true;
 						}
 						else
 						{
-							delParentPos = cur_parent; //±ê¼ÇÊµ¼ÊÉ¾³ý½áµãµÄ¸¸½áµã
-							delPos = cur; //±ê¼ÇÊµ¼ÊÉ¾³ýµÄ½áµã
+							delParentPos = cur_parent; //ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½
+							delPos = cur; //ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½Ä½ï¿½ï¿½
 						}
-						break; //½øÐÐºìºÚÊ÷µÄµ÷ÕûÒÔ¼°½áµãµÄÊµ¼ÊÉ¾³ý
+						break; //ï¿½ï¿½ï¿½Ðºï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½
 					}
-					else //´ýÉ¾³ý½áµãµÄ×óÓÒ×ÓÊ÷¾ù²»Îª¿Õ
+					else //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 					{
-						//Ìæ»»·¨É¾³ý
-						//Ñ°ÕÒ´ýÉ¾³ý½áµãÓÒ×ÓÊ÷µ±ÖÐkeyÖµ×îÐ¡µÄ½áµã×÷ÎªÊµ¼ÊÉ¾³ý½áµã
+						//ï¿½æ»»ï¿½ï¿½É¾ï¿½ï¿½
+						//Ñ°ï¿½Ò´ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½keyÖµï¿½ï¿½Ð¡ï¿½Ä½ï¿½ï¿½ï¿½ï¿½ÎªÊµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½
 						node* minParent = cur;
 						node* minRight = cur->right;
 						while (minRight->left)
@@ -957,50 +955,50 @@ namespace STL
 							minParent = minRight;
 							minRight = minRight->left;
 						}
-						cur->data = minRight->data; //½«´ýÉ¾³ý½áµãµÄkey¸ÄÎªminRightµÄkey
-						delParentPos = minParent; //±ê¼ÇÊµ¼ÊÉ¾³ý½áµãµÄ¸¸½áµã
-						delPos = minRight; //±ê¼ÇÊµ¼ÊÉ¾³ýµÄ½áµã
-						break; //½øÐÐºìºÚÊ÷µÄµ÷ÕûÒÔ¼°½áµãµÄÊµ¼ÊÉ¾³ý
+						cur->data = minRight->data; //ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½keyï¿½ï¿½ÎªminRightï¿½ï¿½key
+						delParentPos = minParent; //ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½
+						delPos = minRight; //ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½Ä½ï¿½ï¿½
+						break; //ï¿½ï¿½ï¿½Ðºï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½
 					}
 				}
 			}
-			if (delPos == nullptr) //delPosÃ»ÓÐ±»ÐÞ¸Ä¹ý£¬ËµÃ÷Ã»ÓÐÕÒµ½´ýÉ¾³ý½áµã
+			if (delPos == nullptr) //delPosÃ»ï¿½Ð±ï¿½ï¿½Þ¸Ä¹ï¿½ï¿½ï¿½Ëµï¿½ï¿½Ã»ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½
 			{
 				return false;
 			}
 
-			//¼ÇÂ¼´ýÉ¾³ý½áµã¼°Æä¸¸½áµã£¨ÓÃÓÚºóÐøÊµ¼ÊÉ¾³ý£©
+			//ï¿½ï¿½Â¼ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ã¼°ï¿½ä¸¸ï¿½ï¿½ã£¨ï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½
 			node* del = delPos;
 			node* delP = delParentPos;
 
-			//µ÷ÕûºìºÚÊ÷
-			if (delPos->color == BLACK) //É¾³ýµÄÊÇºÚÉ«½áµã
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			if (delPos->color == BLACK) //É¾ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½
 			{
-				if (delPos->left) //´ýÉ¾³ý½áµãÓÐÒ»¸öºìÉ«µÄ×óº¢×Ó£¨²»¿ÉÄÜÊÇºÚÉ«£©
+				if (delPos->left) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½
 				{
-					delPos->left->color = BLACK; //½«Õâ¸öºìÉ«µÄ×óº¢×Ó±äºÚ¼´¿É
+					delPos->left->color = BLACK; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½Ó±ï¿½Ú¼ï¿½ï¿½ï¿½
 				}
-				else if (delPos->right) //´ýÉ¾³ý½áµãÓÐÒ»¸öºìÉ«µÄÓÒº¢×Ó£¨²»¿ÉÄÜÊÇºÚÉ«£©
+				else if (delPos->right) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½Òºï¿½ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½
 				{
-					delPos->right->color = BLACK; //½«Õâ¸öºìÉ«µÄÓÒº¢×Ó±äºÚ¼´¿É
+					delPos->right->color = BLACK; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½Òºï¿½ï¿½Ó±ï¿½Ú¼ï¿½ï¿½ï¿½
 				}
-				else //´ýÉ¾³ý½áµãµÄ×óÓÒ¾ùÎª¿Õ
+				else //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¾ï¿½Îªï¿½ï¿½
 				{
-					while (delPos != root) //¿ÉÄÜÒ»Ö±µ÷Õûµ½¸ù½áµã
+					while (delPos != root) //ï¿½ï¿½ï¿½ï¿½Ò»Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 					{
-						if (delPos == delParentPos->left) //´ýÉ¾³ý½áµãÊÇÆä¸¸½áµãµÄ×óº¢×Ó
+						if (delPos == delParentPos->left) //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						{
-							node* brother = delParentPos->right; //ÐÖµÜ½áµãÊÇÆä¸¸½áµãµÄÓÒº¢×Ó
-							//Çé¿öÒ»£ºbrotherÎªºìÉ«
+							node* brother = delParentPos->right; //ï¿½ÖµÜ½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½
+							//ï¿½ï¿½ï¿½Ò»ï¿½ï¿½brotherÎªï¿½ï¿½É«
 							if (brother->color = RED)
 							{
 								delParentPos->color = RED;
 								brother->color = BLACK;
 								left_rotate(delParentPos);
-								//ÐèÒª¼ÌÐø´¦Àí
-								brother = delParentPos->right; //¸üÐÂbrother£¨·ñÔòÔÚ±¾Ñ­»·ÖÐÖ´ÐÐÆäËûÇé¿öµÄ´úÂë»á³ö´í£©
+								//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+								brother = delParentPos->right; //ï¿½ï¿½ï¿½ï¿½brotherï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú±ï¿½Ñ­ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							}
-							//Çé¿ö¶þ£ºbrotherÎªºÚÉ«£¬ÇÒÆä×óÓÒº¢×Ó¶¼ÊÇºÚÉ«½áµã»òÎª¿Õ
+							//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½brotherÎªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½Ó¶ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 							if (((brother->left == nullptr) || (brother->left->color == BLACK))
 								&& ((brother->right == nullptr) || (brother->right->color == BLACK)))
 							{
@@ -1010,42 +1008,42 @@ namespace STL
 									delParentPos->color = BLACK;
 									break;
 								}
-								//ÐèÒª¼ÌÐø´¦Àí
+								//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 								delPos = delParentPos;
 								delParentPos = delPos->parent;
 							}
 							else
 							{
-								//Çé¿öÈý£ºbrotherÎªºÚÉ«£¬ÇÒÆä×óº¢×ÓÊÇºìÉ«½áµã£¬ÓÒº¢×ÓÊÇºÚÉ«½áµã»òÎª¿Õ
+								//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½brotherÎªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ã£¬ï¿½Òºï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 								if ((brother->right == nullptr) || (brother->right->color == BLACK))
 								{
 									brother->left->color = BLACK;
 									brother->color = RED;
 									right_rotate(brother);
-									//ÐèÒª¼ÌÐø´¦Àí
-									brother = delParentPos->right; //¸üÐÂbrother£¨·ñÔòÖ´ÐÐÏÂÃæÇé¿öËÄµÄ´úÂë»á³ö´í£©
+									//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+									brother = delParentPos->right; //ï¿½ï¿½ï¿½ï¿½brotherï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÄµÄ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 								}
-								//Çé¿öËÄ£ºbrotherÎªºÚÉ«£¬ÇÒÆäÓÒº¢×ÓÊÇºìÉ«½áµã
+								//ï¿½ï¿½ï¿½ï¿½Ä£ï¿½brotherÎªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½
 								brother->color = RED;
 								delParentPos->color = BLACK;
 								brother->right->color = BLACK;
 								left_rotate(delParentPos);
-								break; //Çé¿öËÄÖ´ÐÐÍê±Ïºóµ÷ÕûÒ»¶¨½áÊø
+								break; //ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½Ïºï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							}
 						}
-						else //delPos == delParentPos->_right //´ýÉ¾³ý½áµãÊÇÆä¸¸½áµãµÄ×óº¢×Ó
+						else //delPos == delParentPos->_right //ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						{
-							node* brother = delParentPos->left; //ÐÖµÜ½áµãÊÇÆä¸¸½áµãµÄ×óº¢×Ó
-							//Çé¿öÒ»£ºbrotherÎªºìÉ«
-							if (brother->color = RED) //brotherÎªºìÉ«
+							node* brother = delParentPos->left; //ï¿½ÖµÜ½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+							//ï¿½ï¿½ï¿½Ò»ï¿½ï¿½brotherÎªï¿½ï¿½É«
+							if (brother->color = RED) //brotherÎªï¿½ï¿½É«
 							{
 								delParentPos->color = RED;
 								brother->color = BLACK;
 								right_rotate(delParentPos);
-								//ÐèÒª¼ÌÐø´¦Àí
-								brother = delParentPos->left; //¸üÐÂbrother£¨·ñÔòÔÚ±¾Ñ­»·ÖÐÖ´ÐÐÆäËûÇé¿öµÄ´úÂë»á³ö´í£©
+								//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+								brother = delParentPos->left; //ï¿½ï¿½ï¿½ï¿½brotherï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú±ï¿½Ñ­ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							}
-							//Çé¿ö¶þ£ºbrotherÎªºÚÉ«£¬ÇÒÆä×óÓÒº¢×Ó¶¼ÊÇºÚÉ«½áµã»òÎª¿Õ
+							//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½brotherÎªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½Ó¶ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 							if (((brother->left == nullptr) || (brother->left->color == BLACK))
 								&& ((brother->right == nullptr) || (brother->right->color == BLACK)))
 							{
@@ -1055,66 +1053,66 @@ namespace STL
 									delParentPos->color = BLACK;
 									break;
 								}
-								//ÐèÒª¼ÌÐø´¦Àí
+								//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 								delPos = delParentPos;
 								delParentPos = delPos->parent;
 							}
 							else
 							{
-								//Çé¿öÈý£ºbrotherÎªºÚÉ«£¬ÇÒÆäÓÒº¢×ÓÊÇºìÉ«½áµã£¬×óº¢×ÓÊÇºÚÉ«½áµã»òÎª¿Õ
+								//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½brotherÎªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ã£¬ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 								if ((brother->left == nullptr) || (brother->left->color == BLACK))
 								{
 									brother->right->color = BLACK;
 									brother->color = RED;
 									left_rotate(brother);
-									//ÐèÒª¼ÌÐø´¦Àí
-									brother = delParentPos->left; //¸üÐÂbrother£¨·ñÔòÖ´ÐÐÏÂÃæÇé¿öËÄµÄ´úÂë»á³ö´í£©
+									//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+									brother = delParentPos->left; //ï¿½ï¿½ï¿½ï¿½brotherï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÄµÄ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 								}
-								//Çé¿öËÄ£ºbrotherÎªºÚÉ«£¬ÇÒÆä×óº¢×ÓÊÇºìÉ«½áµã
+								//ï¿½ï¿½ï¿½ï¿½Ä£ï¿½brotherÎªï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½É«ï¿½ï¿½ï¿½
 								else if(!brother->color);
 								{
 									delParentPos->color = BLACK;
 									brother->left->color = BLACK;
 									right_rotate(delParentPos);
-									break; //Çé¿öËÄÖ´ÐÐÍê±Ïºóµ÷ÕûÒ»¶¨½áÊø
+									break; //ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½Ïºï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 								}
 							}
 						}
 					}
 				}
 			}
-			//½øÐÐÊµ¼ÊÉ¾³ý
-			if (del->left == nullptr) //Êµ¼ÊÉ¾³ý½áµãµÄ×ó×ÓÊ÷Îª¿Õ
+			//ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½É¾ï¿½ï¿½
+			if (del->left == nullptr) //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 			{
-				if (del == delP->left) //Êµ¼ÊÉ¾³ý½áµãÊÇÆä¸¸½áµãµÄ×óº¢×Ó
+				if (del == delP->left) //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				{
 					delP->left = (del->right);
 					if (del->right)
 						del->right->parent = delP;
 				}
-				else //Êµ¼ÊÉ¾³ý½áµãÊÇÆä¸¸½áµãµÄÓÒº¢×Ó
+				else //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½
 				{
 					delP->right = (del->right);
 					if (del->right)
 						del->right->parent = delP;
 				}
 			}
-			else //Êµ¼ÊÉ¾³ý½áµãµÄÓÒ×ÓÊ÷Îª¿Õ
+			else //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
 			{
-				if (del == delP->left) //Êµ¼ÊÉ¾³ý½áµãÊÇÆä¸¸½áµãµÄ×óº¢×Ó
+				if (del == delP->left) //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				{
 					delP->left = (del->left);
 					if (del->left)
 						del->left->parent = delP;
 				}
-				else //Êµ¼ÊÉ¾³ý½áµãÊÇÆä¸¸½áµãµÄÓÒº¢×Ó
+				else //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½ï¿½
 				{
 					delP->right = (del->left);
 					if (del->left)
 						del->left->parent = delP;
 				}
 			}
-			free(del); //Êµ¼ÊÉ¾³ý½áµã
+			free(del); //Êµï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½
 			return true;
 		}
 		void clear()
@@ -1131,60 +1129,60 @@ namespace STL
 			node* cur = root;
 			while (cur)
 			{
-				if (value < cur->data) //keyÖµÐ¡ÓÚ¸Ã½áµãµÄÖµ
+				if (value < cur->data) //keyÖµÐ¡ï¿½Ú¸Ã½ï¿½ï¿½ï¿½Öµ
 				{
-					cur = cur->left; //ÔÚ¸Ã½áµãµÄ×ó×ÓÊ÷µ±ÖÐ²éÕÒ
+					cur = cur->left; //ï¿½Ú¸Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð²ï¿½ï¿½ï¿½
 				}
-				else if (value > cur->data) //keyÖµ´óÓÚ¸Ã½áµãµÄÖµ
+				else if (value > cur->data) //keyÖµï¿½ï¿½ï¿½Ú¸Ã½ï¿½ï¿½ï¿½Öµ
 				{
-					cur = cur->right; //ÔÚ¸Ã½áµãµÄÓÒ×ÓÊ÷µ±ÖÐ²éÕÒ
+					cur = cur->right; //ï¿½Ú¸Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð²ï¿½ï¿½ï¿½
 				}
-				else //ÕÒµ½ÁËÄ¿±ê½áµã
+				else //ï¿½Òµï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½
 				{
-					return cur; //·µ»Ø¸Ã½áµã
+					return cur; //ï¿½ï¿½ï¿½Ø¸Ã½ï¿½ï¿½
 				}
 			}
-			return nullptr; //²éÕÒÊ§°Ü
+			return nullptr; //ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
 		}
 		node* find(value_type& value)
 		{
 			node* cur = root;
 			while (cur)
 			{
-				if (value < cur->data) //keyÖµÐ¡ÓÚ¸Ã½áµãµÄÖµ
+				if (value < cur->data) //keyÖµÐ¡ï¿½Ú¸Ã½ï¿½ï¿½ï¿½Öµ
 				{
-					cur = cur->left; //ÔÚ¸Ã½áµãµÄ×ó×ÓÊ÷µ±ÖÐ²éÕÒ
+					cur = cur->left; //ï¿½Ú¸Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð²ï¿½ï¿½ï¿½
 				}
-				else if (value > cur->data) //keyÖµ´óÓÚ¸Ã½áµãµÄÖµ
+				else if (value > cur->data) //keyÖµï¿½ï¿½ï¿½Ú¸Ã½ï¿½ï¿½ï¿½Öµ
 				{
-					cur = cur->right; //ÔÚ¸Ã½áµãµÄÓÒ×ÓÊ÷µ±ÖÐ²éÕÒ
+					cur = cur->right; //ï¿½Ú¸Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð²ï¿½ï¿½ï¿½
 				}
-				else //ÕÒµ½ÁËÄ¿±ê½áµã
+				else //ï¿½Òµï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½
 				{
-					return cur; //·µ»Ø¸Ã½áµã
+					return cur; //ï¿½ï¿½ï¿½Ø¸Ã½ï¿½ï¿½
 				}
 			}
-			return nullptr; //²éÕÒÊ§°Ü
+			return nullptr; //ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
 		}
 		node* find(value_type&& value)
 		{
 			node* cur = root;
 			while (cur)
 			{
-				if (value < cur->data) //keyÖµÐ¡ÓÚ¸Ã½áµãµÄÖµ
+				if (value < cur->data) //keyÖµÐ¡ï¿½Ú¸Ã½ï¿½ï¿½ï¿½Öµ
 				{
-					cur = cur->left; //ÔÚ¸Ã½áµãµÄ×ó×ÓÊ÷µ±ÖÐ²éÕÒ
+					cur = cur->left; //ï¿½Ú¸Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð²ï¿½ï¿½ï¿½
 				}
-				else if (value > cur->data) //keyÖµ´óÓÚ¸Ã½áµãµÄÖµ
+				else if (value > cur->data) //keyÖµï¿½ï¿½ï¿½Ú¸Ã½ï¿½ï¿½ï¿½Öµ
 				{
-					cur = cur->right; //ÔÚ¸Ã½áµãµÄÓÒ×ÓÊ÷µ±ÖÐ²éÕÒ
+					cur = cur->right; //ï¿½Ú¸Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð²ï¿½ï¿½ï¿½
 				}
-				else //ÕÒµ½ÁËÄ¿±ê½áµã
+				else //ï¿½Òµï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½
 				{
-					return cur; //·µ»Ø¸Ã½áµã
+					return cur; //ï¿½ï¿½ï¿½Ø¸Ã½ï¿½ï¿½
 				}
 			}
-			return nullptr; //²éÕÒÊ§°Ü
+			return nullptr; //ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
 		}
 	private:
 		bool root_is_black()
@@ -1202,22 +1200,22 @@ namespace STL
 			}
 			return false;
 		}
-		//×óÐý
+		//ï¿½ï¿½ï¿½ï¿½
 		void left_rotate(node*& cparent)
 		{
 			node* subR = cparent->right;
 			node* subRL = subR->left;
 			node* cparentParent = cparent->parent;
-			//½¨Á¢subRLÓëparentÖ®¼äµÄÁªÏµ
+			//ï¿½ï¿½ï¿½ï¿½subRLï¿½ï¿½parentÖ®ï¿½ï¿½ï¿½ï¿½ï¿½Ïµ
 			cparent->right = subRL;
 			if (subRL)
 				subRL->parent = cparent;
 
-			//½¨Á¢parentÓësubRÖ®¼äµÄÁªÏµ
+			//ï¿½ï¿½ï¿½ï¿½parentï¿½ï¿½subRÖ®ï¿½ï¿½ï¿½ï¿½ï¿½Ïµ
 			subR->left = (cparent);
 			cparent->parent = subR;
 
-			//½¨Á¢subRÓëparentParentÖ®¼äµÄÁªÏµ
+			//ï¿½ï¿½ï¿½ï¿½subRï¿½ï¿½parentParentÖ®ï¿½ï¿½ï¿½ï¿½ï¿½Ïµ
 			if (cparentParent == nullptr)
 			{
 				root = subR;
@@ -1236,23 +1234,23 @@ namespace STL
 				subR->parent = cparentParent;
 			}
 		}
-		//ÓÒÐý
+		//ï¿½ï¿½ï¿½ï¿½
 		void right_rotate(node*& cparent)
 		{
 			node* subL = cparent->left;
 			node* subLR = subL->right;
 			node* cparentParent = cparent->parent;
 
-			//½¨Á¢subLRÓëparentÖ®¼äµÄÁªÏµ
+			//ï¿½ï¿½ï¿½ï¿½subLRï¿½ï¿½parentÖ®ï¿½ï¿½ï¿½ï¿½ï¿½Ïµ
 			cparent->left = subLR;
 			if (subLR)
 				subLR->parent = cparent;
 
-			//½¨Á¢parentÓësubLÖ®¼äµÄÁªÏµ
+			//ï¿½ï¿½ï¿½ï¿½parentï¿½ï¿½subLÖ®ï¿½ï¿½ï¿½ï¿½ï¿½Ïµ
 			subL->right = cparent;
 			cparent->parent = subL;
 
-			//½¨Á¢subLÓëparentParentÖ®¼äµÄÁªÏµ
+			//ï¿½ï¿½ï¿½ï¿½subLï¿½ï¿½parentParentÖ®ï¿½ï¿½ï¿½ï¿½ï¿½Ïµ
 			if (cparentParent == nullptr)
 			{
 				root = subL;
@@ -1272,7 +1270,7 @@ namespace STL
 			}
 		}
 
-		//×óÓÒË«Ðý
+		//ï¿½ï¿½ï¿½ï¿½Ë«ï¿½ï¿½
 		void LR_rotate(node*& cparent)
 		{
 			left_rotate(cparent);
@@ -1289,4 +1287,3 @@ namespace STL
 	};
 
 }
-#endif //MY_STL_RED_BLACK_TREE

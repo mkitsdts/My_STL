@@ -2,8 +2,7 @@
 // Created by mkitsdts on 16/6/2024.
 //
 
-#ifndef MY_STL_ALLOC_H
-#define MY_STL_ALLOC_H
+#pragma once
 #include <new>
 #include <cassert>
 constexpr auto ALIGN = 8;
@@ -57,7 +56,7 @@ namespace STL
 				
 				*add_needed_free_list = (obj *)((obj *)chunk + size);
 				next_obj = (obj *)((obj *)chunk + size);
-				//½«È¡³öµÄ¶àÓàµÄ¿Õ¼ä¼ÓÈëµ½ÏàÓ¦µÄfree listÀïÃæ
+				//ï¿½ï¿½È¡ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½Ä¿Õ¼ï¿½ï¿½ï¿½ëµ½ï¿½ï¿½Ó¦ï¿½ï¿½free listï¿½ï¿½ï¿½ï¿½
 				for (size_t i = 1;; ++i)
 				{
 					current_obj = next_obj;
@@ -76,25 +75,25 @@ namespace STL
 			}
 		}
 
-		//ÄÚ´æ³Ø·ÖÅäÄÚ´æµÄº¯Êý
-		//ÅäÖÃÒ»´ó¿é¿Õ¼ä£¬¿ÉÈÝÄÉnobjs¸ö´óÐ¡ÎªsizeµÄÇø
+		//ï¿½Ú´ï¿½Ø·ï¿½ï¿½ï¿½ï¿½Ú´ï¿½Äºï¿½ï¿½ï¿½
+		//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Õ¼ä£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nobjsï¿½ï¿½ï¿½ï¿½Ð¡Îªsizeï¿½ï¿½ï¿½ï¿½
 		static char* chunk_alloc(size_t size, size_t& nobjs)
 		{
 			char* result = nullptr;
-			size_t total = size * nobjs;					//ÐèÒª·ÖÅäµÄ×Ü¿Õ
-			size_t bytes_left = end_free - start_free;		//ÄÚ´æ³ØÊ£Óà¿Õ
+			size_t total = size * nobjs;					//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü¿ï¿½
+			size_t bytes_left = end_free - start_free;		//ï¿½Ú´ï¿½ï¿½Ê£ï¿½ï¿½ï¿½
 			
 			if (bytes_left >= total)
 			{
-				//ÄÚ´æ³ØÊ£Óà¿Õ¼äÂú×ãÐèÒª
+				//ï¿½Ú´ï¿½ï¿½Ê£ï¿½ï¿½Õ¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òª
 				result = start_free;
 				start_free = start_free + total;
 				return result;
 			}
 			else if (bytes_left >= size)
 			{
-				//ÄÚ´æ³ØÊ£Óà¿Õ¼ä²»ÄÜÍêÈ«Âú×ãÐèÒª£¬µ«ÓÖ´óÓÚÒ»¸öÇø
-				//ÕâÀï»áÐÞ¸ÄnobjsµÄÖµ£¬Ê¹Æä±äÎªÄÚ´æ³ØÊ£Óà¿Õ¼äÄÜ¹»·ÖÅäµÄÇø¿é
+				//ï¿½Ú´ï¿½ï¿½Ê£ï¿½ï¿½Õ¼ä²»ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½
+				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½nobjsï¿½ï¿½Öµï¿½ï¿½Ê¹ï¿½ï¿½ï¿½Îªï¿½Ú´ï¿½ï¿½Ê£ï¿½ï¿½Õ¼ï¿½ï¿½Ü¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				nobjs = bytes_left / size;
 				total = nobjs * size;
 				result = start_free;
@@ -103,23 +102,23 @@ namespace STL
 			}
 			else
 			{
-				//ÄÚ´æ³ØÊ£Óà¿Õ¼ä²»×ãÒ»¸öÇø¿éµÄ´óÐ¡
+				//ï¿½Ú´ï¿½ï¿½Ê£ï¿½ï¿½Õ¼ä²»ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½Ð¡
 				size_t need_bytes = 2 * total + ROUND_UP(heap_size >> 4);
 				if (bytes_left > 0)
 				{
-					//ÄÚ´æ³Ø»¹ÓÐÒ»Ð©ÁãÍ·£¬ÏÈÅä¸øÊÊµ±µÄfree_list
-					//×îÖÕ½á¹ûÊÇ£¬ÄÚ´æ³ØÆðÊ¼Î»ÖÃ±äÎªÁ´±íÊ×½Ú
+					//ï¿½Ú´ï¿½Ø»ï¿½ï¿½ï¿½Ò»Ð©ï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½free_list
+					//ï¿½ï¿½ï¿½Õ½ï¿½ï¿½ï¿½Ç£ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½Ê¼Î»ï¿½Ã±ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½×½ï¿½
 					obj** appropriate_free_list = free_list + FREELIST_INDEX(bytes_left);
 					((obj*)start_free)->free_list_link = *appropriate_free_list;
 					*appropriate_free_list = (obj*)(start_free);
-					//ÓÐµã¸´ÔÓ£¬²»ºÃÀí½â
+					//ï¿½Ðµã¸´ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				}
-				//³¢ÊÔÉêÇëÄÚ´æ
+				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½
 				start_free = static_cast<char*>(operator new(need_bytes));
-				//ÄÚ´æ³ØÉêÇëÊ§
+				//ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§
 				if (start_free == nullptr)
 				{
-					//½«ÄÚ´æ³ØÀïµÄÄÚ´æÈ«²¿·ÖÅäµ½free_list
+					//ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½È«ï¿½ï¿½ï¿½ï¿½ï¿½äµ½free_list
 					obj** temp_free_list = nullptr;
 					obj* temp = nullptr;
 					for (size_t i = 0; i < NFREELIST; ++i)
@@ -136,8 +135,8 @@ namespace STL
 					}
 					end_free = nullptr;
 				}
-				//ÄÚ´æ³ØÉêÇë³É
-				//µÝ¹éµ÷ÓÃ×Ô¼º£¬È·±£ÄÚ´æ³ØÓÐ×ã¹»µÄ¿Õ¼ä
+				//ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				//ï¿½Ý¹ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½È·ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ã¹»ï¿½Ä¿Õ¼ï¿½
 				heap_size += need_bytes;
 				end_free = start_free + need_bytes;
 				return chunk_alloc(size, nobjs);
@@ -145,31 +144,31 @@ namespace STL
 		}
 
 	 public:
-		//·ÖÅäÄÚ´æ
+		//ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½
 		static void* allocate(size_t size)
 		{
-			//ÉêÇësize¸ö×Ö½ÚµÄÄÚ´æ
-			//Èç¹û´óÓÚÉêÇëµÄÄÚ´æ128×Ö½Ú£¬Ö±½ÓÏòÏµÍ³ÉêÇë
+			//ï¿½ï¿½ï¿½ï¿½sizeï¿½ï¿½ï¿½Ö½Úµï¿½ï¿½Ú´ï¿½
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½128ï¿½Ö½Ú£ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½ï¿½ï¿½
 			if (size > MAX_BYTES)
 			{
 				return operator new(size);
 			}
-			//indexÎªºÏÊÊµÄfree_list½Úµã
+			//indexÎªï¿½ï¿½ï¿½Êµï¿½free_listï¿½Úµï¿½
 			size_t index = FREELIST_INDEX(size);
 			obj* list = free_list[index];
 			if (list)
 			{
-				//´Ëlist»¹ÓÐ¿Õ¼ä¸ø
+				//ï¿½ï¿½listï¿½ï¿½ï¿½Ð¿Õ¼ï¿½ï¿½
 				free_list[index] = list->free_list_link;
 				return list;
 			}
 			else
 			{
-				//´ËlistÃ»ÓÐ×ã¹»µÄ¿Õ¼ä£¬ÐèÒª´ÓÄÚ´æ³ØÀïÃæÈ¡¿Õ¼ä
+				//ï¿½ï¿½listÃ»ï¿½ï¿½ï¿½ã¹»ï¿½Ä¿Õ¼ä£¬ï¿½ï¿½Òªï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½Õ¼ï¿½
 				return refill(ROUND_UP(size));
 			}
 		}
-		//ÊÍ·ÅÄÚ´æ
+		//ï¿½Í·ï¿½ï¿½Ú´ï¿½
 		static void deallocate(void* ptr, size_t bytes)
 		{
 			if (bytes > MAX_BYTES)
@@ -184,7 +183,7 @@ namespace STL
 				free_list[index] = node;
 			}
 		}
-		//ÖØÐÂ·ÖÅäÄÚ´æ
+		//ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½Ú´ï¿½
 		static void* reallocate(void*& ptr, size_t old_sz, size_t new_sz)
 		{
 			deallocate(ptr, old_sz);
@@ -207,4 +206,3 @@ namespace STL
 	Alloc::obj* Alloc::free_list[NFREELIST] = { nullptr, nullptr, nullptr, nullptr, nullptr,
 	nullptr, nullptr, nullptr, nullptr };
 }
-#endif //MY_STL_ALLOC_H

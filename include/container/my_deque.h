@@ -2,7 +2,7 @@
 #ifndef MY_STL_MY_DEQUE_H
 #define MY_STL_MY_DEQUE_H
 
-#include "../allocator/Allocator.h"
+#include "allocator/Allocator.h"
 
 namespace STL
 {

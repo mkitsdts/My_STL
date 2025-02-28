@@ -1,12 +1,10 @@
 #pragma once
-#ifndef MY_SET_H
-#define MY_SET_H
-#include "../allocator/Allocator.h"
-#include "../base/RBTree.h"
+#include "allocator/Allocator.h"
+#include "base/rbtree.h"
+#include <functional>
 
 namespace STL
 {
-	//ºìºÚÊ÷
 	template<class Key, class Compare = std::less<Key>, class Alloc = Allocator<Key>>
 	class My_Set
 	{
@@ -82,5 +80,3 @@ namespace STL
 		size_t size;
 	};
 }
-
-#endif // !MY_SET_H

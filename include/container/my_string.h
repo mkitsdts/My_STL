@@ -1,13 +1,14 @@
-#ifndef MY_STL_MY_STRING_H
-#define MY_STL_MY_STRING_H
+#pragma once
 
-#include "../allocator/Allocator.h"
+#include "allocator/allocator.h"
+#include <cstring>
 #include <ostream>
 #include <istream>
 
 namespace STL
 {
 	constexpr size_t STRING_MAX_SIZE = 999;
+
 	class My_String_Iterator
 	{
 	public:
@@ -73,36 +74,49 @@ namespace STL
 		My_String(char* str)
 		{
 			size_t size = 0;
-			while (*(str) != '\0' && size != STRING_MAX_SIZE)
+			while (*(str) != '\0' && size <= STRING_MAX_SIZE)
 			{
 				++_size;
 				++size;
 			}
 			if (!size)
 			{
-				_end = _begin + STRING_MAX_SIZE - 1;
-				*str = '\0';
+				_begin = alloc::allocate(1);
+				_begin[0] = '\0';
+				_end = _begin;
 			}
 			else
 			{
-				_end = _begin + size - 1;
+				_begin = alloc::allocate(_size);
+				_end = _begin + _size - 1;
+				for (size_t i = 0; i < _size; ++i)
+				{
+					_begin[i] = str[i];
+				}
 			}
 		}
 		My_String(const char* str) :_begin(const_cast<char*>(str)),_size(0)
 		{
-			while (*(str) != '\0' && _size <= STRING_MAX_SIZE)
+			size_t size = 0;
+			while (*(str) != '\0' && size <= STRING_MAX_SIZE)
 			{
 				++_size;
-				++str;
+				++size;
 			}
-			if (_size == STRING_MAX_SIZE)
+			if (!size)
 			{
-				_end = _begin + STRING_MAX_SIZE - 1;
-				//*str = '\0';
+				_begin = alloc::allocate(1);
+				_begin[0] = '\0';
+				_end = _begin;
 			}
 			else
 			{
+				_begin = alloc::allocate(_size);
 				_end = _begin + _size - 1;
+				for (size_t i = 0; i < _size; ++i)
+				{
+					_begin[i] = str[i];
+				}
 			}
 		}
 		My_String(const My_String& str) : _size(str.size())
@@ -184,24 +198,26 @@ namespace STL
 		{
 			alloc::deallocate(_begin, _size);
 			_size = 0;
-			while (*(str) != '\0' && _size <= STRING_MAX_SIZE)
+			size_t size = 0;
+			while (*(str) != '\0' && size <= STRING_MAX_SIZE)
 			{
 				++_size;
-				++str;
+				++size;
 			}
-			if (_size == STRING_MAX_SIZE)
+			if (!size)
 			{
-				_end = _begin + STRING_MAX_SIZE - 1;
-				*str = '\0';
+				_begin = alloc::allocate(1);
+				_begin[0] = '\0';
+				_end = _begin;
 			}
 			else
 			{
-				_end = _begin + size - 1;
-			}
-			_begin = alloc::allocate(_size);
-			for (size_t i = 0; i < _size; ++i)
-			{
-				_begin[i] = str[i];
+				_begin = alloc::allocate(_size);
+				_end = _begin + _size - 1;
+				for (size_t i = 0; i < _size; ++i)
+				{
+					_begin[i] = str[i];
+				}
 			}
 			return *this;
 		}
@@ -233,14 +249,11 @@ namespace STL
 	}
 	std::istream& operator >>(std::istream& input, My_String<>& str)
 	{
-		//此处要重写
 		char s[256];
 		input >> s;
 		if(!str._begin)
 			str._begin = new char[256];
-		strcpy_s(str._begin, 256, s);
+		strcpy(str._begin,s);
 		return input;
 	}
 }
-
-#endif //MY_STL_MY_STRING_H

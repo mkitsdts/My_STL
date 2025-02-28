@@ -2,10 +2,8 @@
 // Created by mkitsdts on 16/6/2024.
 //
 
-#ifndef MY_STL_ALLOCATE_H
-#define MY_STL_ALLOCATE_H
-
-#include "Alloc.h"
+#pragma once
+#include "alloc.h"
 namespace STL
 {
 	template<typename value_type>
@@ -15,12 +13,12 @@ namespace STL
 		Allocator() = default;
 		~Allocator() = default;
 
-		// Ä¬ÈÏÉêÇë1¸övalue_typeµÄ¿Õ¼ä
+		// Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½value_typeï¿½Ä¿Õ¼ï¿½
 		static value_type* allocate()
 		{
 			return static_cast<value_type*>(Alloc::allocate((size_t)sizeof(value_type)));
 		}
-		// ÉêÇën¸övalue_typeµÄ¿Õ¼ä
+		// ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½value_typeï¿½Ä¿Õ¼ï¿½
 		static value_type* allocate(const size_t& n)
 		{
 			if (n <= 0)
@@ -33,13 +31,13 @@ namespace STL
 			}
 		}
 
-		// Ö¸¶¨ÊÍ·Ån¸övalue_typeµÄ¿Õ¼ä
+		// Ö¸ï¿½ï¿½ï¿½Í·ï¿½nï¿½ï¿½value_typeï¿½Ä¿Õ¼ï¿½
 		static void deallocate(value_type* ptr, size_t n)
 		{
 			Alloc::deallocate(static_cast<void*>(ptr),n);
 		}
 
-		// Ä¬ÈÏÎÞ²Î¹¹Ôìº¯Êý
+		// Ä¬ï¿½ï¿½ï¿½Þ²Î¹ï¿½ï¿½ìº¯ï¿½ï¿½
 		static void construct(value_type* ptr)
 		{
 			new(ptr)value_type{};
@@ -63,4 +61,3 @@ namespace STL
 		}
 	};
 }
-#endif //MY_STL_ALLOCATE_H

@@ -1,6 +1,4 @@
-#ifndef My_STL_ALGORITHM_H
-#define My_STL_ALGORITHM_H
-
+#pragma once
 #include <functional>
 
 namespace STL
@@ -169,5 +167,3 @@ namespace STL
 		}
 	}
 }
-
-#endif // !ALGORITHM_H

@@ -1,11 +1,5 @@
-#ifndef MY_STL_MY_EASY_UNORDERED_SET
-#define MY_STL_MY_EASY_UNORDERED_SET
-#include "../base/hashtable.h"
-
-/*
-简单实现标准库实现难度过高
-只能插入标准数据类型，且无迭代器
-*/
+#pragma once
+#include "base/hashtable.h"
 
 namespace STL
 {
@@ -55,5 +49,3 @@ namespace STL
 		HashTable<value_type> _table;
 	};
 }
-
-#endif // !MY_STL_MY_EASY_UNORDERED_SET

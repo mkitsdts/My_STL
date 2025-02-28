@@ -1,11 +1,10 @@
-#ifndef MY_STL_HASHTABLE_H
-#define MY_STL_HASHTABLE_H
+#pragma once
 
-#include "../allocator/Allocator.h"
+#include "allocator/allocator.h"
 #include <string_view>
 #include <string>
 
-//为了更好的效果，引用标准库的string和string_view
+//为锟剿革拷锟矫碉拷效锟斤拷锟斤拷锟斤拷锟矫憋拷准锟斤拷锟絪tring锟斤拷string_view
 
 namespace STL
 {
@@ -175,4 +174,3 @@ namespace STL
 		node* buckets[MAX_BUCKET_COUNT];
 	};
 }
-#endif // !MY_STL_HASHTABLE_H

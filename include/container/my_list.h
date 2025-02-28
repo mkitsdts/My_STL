@@ -1,10 +1,8 @@
-#ifndef MY_LIST_H
-#define MY_LIST_H
-#include "../allocator/Allocator.h"
+#pragma once
+#include "allocator/Allocator.h"
 
 namespace STL
 {
-	//链表节点
 	template<class T>
 	class My_List_Node
 	{
@@ -87,36 +85,30 @@ namespace STL
 			this = it;
 		}
 	public:
-		//前置
 		iterator operator++()
 		{
 			iterator tmp = this;
 			_ptr = _ptr->next;
 			return tmp;
 		}
-		//后置++
 		iterator operator++(int)
 		{
 			return _ptr->next;
 		}
-		//前置--
 		iterator operator--()
 		{
 			iterator tmp = this;
 			_ptr = _ptr->prev;
 			return tmp;
 		}
-		//后置--
 		iterator operator--(int)
 		{
 			return _ptr->prev;
 		}
-		//*操作符重载
 		value_type& operator*()
 		{
 			return *_ptr;
 		}
-		//->操作符重载
 		pointer& operator->()
 		{
 			return _ptr;
@@ -129,7 +121,6 @@ namespace STL
 		pointer _ptr;
 	};
 
-	//反向迭代器
 	template <class Node>
 	class My_List_Reverse_Iterator
 	{
@@ -150,27 +141,23 @@ namespace STL
 			this = it;
 		}
 	public:
-		//前置
 		iterator operator++()
 		{
 			iterator tmp = this;
 			--_ptr;
 			return tmp;
 		}
-		//后置++
 		iterator operator++(int)
 		{
 			--_ptr;
 			return this;
 		}
-		//前置--
 		iterator operator--()
 		{
 			iterator tmp = this;
 			++_ptr;
 			return tmp;
 		}
-		//后置--
 		iterator operator--(int)
 		{
 			++_ptr;
@@ -181,12 +168,10 @@ namespace STL
 			_ptr = _ptr - n;
 			return this;
 		}
-		//*操作符重载
 		value_type& operator*()
 		{
 			return *_ptr;
 		}
-		//->操作符重载
 		pointer operator->()
 		{
 			return _ptr;
@@ -377,8 +362,6 @@ namespace STL
 				--_size;
 			}
 		}
-	//删除
-		//清除所有元素
 		void clear()
 		{
 			while (_size > 0)
@@ -386,7 +369,6 @@ namespace STL
 				pop_back();
 			}
 		}
-		//擦除元素
 		iterator erase(const iterator& pos)
 		{
 			if (_size <= 0)
@@ -439,6 +421,3 @@ namespace STL
 		size_t _size;
 	};
 }
-
-
-#endif // !MY_LIST_H

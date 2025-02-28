@@ -1,10 +1,10 @@
 #pragma once
 #define MY_MAP_H
-#include "../base/pair.h"
+#include "base/pair.h"
 #include "my_set.h"
-#include "../allocator/Allocator.h"
+#include "allocator/Allocator.h"
 
-/*Ò»¸ö¼üÉú³ÉÎ¨Ò»Âë¶ÔÓ¦ÁíÒ»¸öÖµ*/
+/*Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î¨Ò»ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½Ò»ï¿½ï¿½Öµ*/
 namespace STL
 {
 	template<class Key, class T, class Compare = std::less<Key>, class Alloc = Allocator<pair<Key,T>>>
