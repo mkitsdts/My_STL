@@ -1,0 +1,103 @@
+{
+    yasm_arch_arm64_plat_linux = {
+        plat = "linux",
+        __global = true,
+        __checked = true,
+        arch = "arm64"
+    },
+    cross_arch_arm64_plat_linux = {
+        plat = "linux",
+        __global = true,
+        __checked = false,
+        arch = "arm64"
+    },
+    tool_target_tiny_stl_linux_arm64_cxx = {
+        toolname = "gcc",
+        program = "gcc",
+        toolchain_info = {
+            plat = "linux",
+            arch = "arm64",
+            cachekey = "gcc_arch_arm64_plat_linux",
+            name = "gcc"
+        }
+    },
+    tool_target_tiny_stl_linux_arm64_ld = {
+        toolname = "clangxx",
+        program = "g++",
+        toolchain_info = {
+            name = "gcc",
+            plat = "linux",
+            cachekey = "gcc_arch_arm64_plat_linux",
+            arch = "arm64"
+        }
+    },
+    rust_arch_arm64_plat_linux = {
+        plat = "linux",
+        __global = true,
+        __checked = true,
+        arch = "arm64"
+    },
+    gcc_arch_arm64_plat_linux = {
+        plat = "linux",
+        __global = true,
+        __checked = {
+            name = "gcc",
+            program = "gcc"
+        },
+        arch = "arm64"
+    },
+    nasm_arch_arm64_plat_linux = {
+        plat = "linux",
+        __global = true,
+        __checked = true,
+        arch = "arm64"
+    },
+    gfortran_arch_arm64_plat_linux = {
+        plat = "linux",
+        __global = true,
+        __checked = true,
+        arch = "arm64"
+    },
+    cuda_arch_arm64_plat_linux = {
+        plat = "linux",
+        __global = true,
+        __checked = true,
+        arch = "arm64"
+    },
+    envs_arch_arm64_plat_linux = {
+        plat = "linux",
+        __global = true,
+        __checked = true,
+        arch = "arm64"
+    },
+    fpc_arch_arm64_plat_linux = {
+        plat = "linux",
+        __global = true,
+        __checked = true,
+        arch = "arm64"
+    },
+    go_arch_arm64_plat_linux = {
+        plat = "linux",
+        __global = true,
+        __checked = true,
+        arch = "arm64"
+    },
+    swift_arch_arm64_plat_linux = {
+        plat = "linux",
+        __global = true,
+        __checked = true,
+        arch = "arm64"
+    },
+    nim_arch_arm64_plat_linux = {
+        plat = "linux",
+        __global = true,
+        __checked = false,
+        arch = "arm64"
+    },
+    fasm_arch_arm64_plat_linux = {
+        plat = "linux",
+        __global = true,
+        __checked = true,
+        arch = "arm64"
+    }
+}

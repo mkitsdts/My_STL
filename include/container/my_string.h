@@ -185,7 +185,7 @@ namespace STL
 			}
 			else
 			{
-				_end = _begin + size - 1;
+				_end = _begin + _size - 1;
 			}
 			_begin = alloc::allocate(_size);
 			for (size_t i = 0; i < _size; ++i)
