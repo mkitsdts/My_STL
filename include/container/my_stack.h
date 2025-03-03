@@ -1,5 +1,4 @@
-#ifndef MY_STL_MY_STACK_H
-#define MY_STL_MY_STACK_H
+#pragma
 
 #include "my_deque.h"
 
@@ -36,5 +35,3 @@ namespace MY_STL
         My_Deque<value_type> _deque;
     };
 }
-
-#endif //MY_STL_MY_STACK_H

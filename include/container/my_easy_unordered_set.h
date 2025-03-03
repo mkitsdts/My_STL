@@ -14,27 +14,11 @@ namespace STL
 		~My_Easy_Unordered_Set()
 		{
 		}
-		void insert(value& val)
-		{
-			_table.insert(val);
-		}
-		void insert(value&& val)
-		{
-			_table.insert(val);
-		}
 		void insert(const value& val)
 		{
 			_table.insert(val);
 		}
 
-		void erase(value& val)
-		{
-			_table.erase(val);
-		}
-		void erase(value&& val)
-		{
-			_table.erase(val);
-		}
 		void erase(const value& val)
 		{
 			_table.erase(val);

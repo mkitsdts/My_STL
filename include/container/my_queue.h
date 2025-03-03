@@ -1,6 +1,4 @@
-#ifndef MY_STL_MY_QUEUE_H
-#define MY_STL_MY_QUEUE_H
-
+#pragma once
 #include "my_deque.h"
 
 namespace MY_STL
@@ -46,5 +44,3 @@ namespace MY_STL
         my_deque<value_type> _deque;
     };
 }
-
-#endif //MY_STL_MY_QUEUE_H

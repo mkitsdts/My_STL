@@ -1,8 +1,6 @@
 ﻿#pragma once
-#ifndef MY_STL_MY_DEQUE_H
-#define MY_STL_MY_DEQUE_H
 
-#include "allocator/Allocator.h"
+#include "allocator/allocator.h"
 
 namespace STL
 {
@@ -374,5 +372,3 @@ namespace STL
         }
     };
 }
-
-#endif //MY_STL_MY_DEQUE_H
