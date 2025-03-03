@@ -72,8 +72,8 @@ namespace STL
 	{
 	public:
 		using value_type = T;
-		using pointer = T*;
-		using reference = T&;
+		using pointer = My_List_Node<T>*;
+		using reference = My_List_Node<T> &;
 		using iterator = My_List_Iterator<T>;
 	public:
 		My_List_Iterator(pointer ptr) noexcept
@@ -82,32 +82,32 @@ namespace STL
 		}
 		My_List_Iterator(const My_List_Iterator& it) noexcept
 		{
-			this = it;
+			*this = it;
 		}
 	public:
 		iterator operator++()
 		{
-			iterator tmp = this;
-			_ptr = _ptr->next;
+			iterator tmp = *this;
+			_ptr = _ptr->get_next();
 			return tmp;
 		}
 		iterator operator++(int)
 		{
-			return _ptr->next;
+			return My_List_Iterator(_ptr->get_next());
 		}
 		iterator operator--()
 		{
-			iterator tmp = this;
-			_ptr = _ptr->prev;
+			iterator tmp = *this;
+			_ptr = _ptr->get_prev();
 			return tmp;
 		}
 		iterator operator--(int)
 		{
-			return _ptr->prev;
+			return My_List_Iterator(_ptr->get_prev());
 		}
 		value_type& operator*()
 		{
-			return *_ptr;
+			return (_ptr->get_data());
 		}
 		pointer& operator->()
 		{
@@ -117,64 +117,9 @@ namespace STL
 		{
 			return _ptr == it._ptr;
 		}
-	private:
-		pointer _ptr;
-	};
-
-	template <class Node>
-	class My_List_Reverse_Iterator
-	{
-	public:
-		using value_type = typename Node::value_type;
-		using difference_type = typename Node::difference_type;
-		using pointer = typename Node::pointer;
-		using const_pointer = typename Node::const_pointer;
-		using reference = const value_type&;
-		using iterator = My_Vector_Reverse_Iterator<Node>;
-	public:
-		My_Vector_Reverse_Iterator(pointer ptr) noexcept
+		bool operator!=(const iterator& it)
 		{
-			_ptr = ptr;
-		}
-		My_Vector_Reverse_Iterator(const My_Vector_Reverse_Iterator& it) noexcept
-		{
-			this = it;
-		}
-	public:
-		iterator operator++()
-		{
-			iterator tmp = this;
-			--_ptr;
-			return tmp;
-		}
-		iterator operator++(int)
-		{
-			--_ptr;
-			return this;
-		}
-		iterator operator--()
-		{
-			iterator tmp = this;
-			++_ptr;
-			return tmp;
-		}
-		iterator operator--(int)
-		{
-			++_ptr;
-			return this;
-		}
-		iterator operator+(int n)
-		{
-			_ptr = _ptr - n;
-			return this;
-		}
-		value_type& operator*()
-		{
-			return *_ptr;
-		}
-		pointer operator->()
-		{
-			return _ptr;
+			return _ptr != it._ptr;
 		}
 	private:
 		pointer _ptr;
@@ -206,10 +151,7 @@ namespace STL
 		}
 		~My_List()
 		{
-			for (size_t i = 0; i < list.size(); ++i)
-			{
-				pop_back();
-			}
+			clear();
 		}
 	public:
 		value_type& front()
@@ -230,15 +172,17 @@ namespace STL
 		{
 			if (head != tail)
 			{
-				return iterator(&(head->get_data));
+				return iterator(head);
 			}
+			return iterator(nullptr);
 		}
 		iterator end()
 		{
 			if (head != tail)
 			{
-				return iterator(&(tail->get_data));
+				return iterator(nullptr);
 			}
+			return iterator(tail);
 		}
 		iterator at(size_t pos)
 		{
@@ -377,11 +321,13 @@ namespace STL
 			}
 			else if(*pos == head)
 			{
+				--_size;
 				pop_front();
 				return nullptr;
 			}
 			else if(*pos == tail)
 			{
+				--_size;
 				pop_back();
 				return tail;
 			}
@@ -393,6 +339,7 @@ namespace STL
 				*pos->set_next(*temp->get_next());
 				*temp->get_next()->set_prev(*pos);
 				delete temp;
+				--_size;
 				return pos;
 			}
 		}
@@ -404,6 +351,7 @@ namespace STL
 				erase(first);
 				++temp;
 			}
+			--_size;
 			return *first->get_prev();
 		}
 		iterator erase(size_t pos)
@@ -413,7 +361,13 @@ namespace STL
 			{
 				++temp;
 			}
+			--_size;
 			return erase(temp);
+		}
+
+		size_t size()
+		{
+			return _size;
 		}
 	private:
 		node* head;

@@ -1,5 +1,4 @@
-#pragma
-
+#pragma once
 #include "my_deque.h"
 
 namespace MY_STL

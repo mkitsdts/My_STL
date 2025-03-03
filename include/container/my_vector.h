@@ -7,6 +7,10 @@
 
 namespace STL
 {
+	constexpr size_t default_resize = 2;
+	constexpr size_t no_num = 0;
+	constexpr size_t first = 1;
+
 	template <class value_type>
 	class My_Vector_Iterator
 	{
@@ -189,11 +193,11 @@ namespace STL
 		}
 		My_Vector_Iterator<value_type> begin()
 		{
-			return My_Vector_Iterator(_begin + first);
+			return My_Vector_Iterator(_begin);
 		}
 		My_Vector_Iterator<value_type> end()
 		{
-			return My_Vector_Iterator(_current);
+			return My_Vector_Iterator(_current+first);
 		}
 		My_Vector_Reverse_Iterator<value_type> rbegin()
 		{
@@ -412,10 +416,6 @@ namespace STL
 			}
 			return false;
 		}
-	private:
-		enum { default_resize = 2 };
-		enum { no_num = 0 };
-		enum { first = 1 };
 	private:
 		value_type* _begin;
 		value_type* _end;
