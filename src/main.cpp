@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "base/rbtree.h"
 #include "container/my_list.h"
 #include "container/my_set.h"
 #include "container/my_string.h"
@@ -52,10 +53,37 @@ void set_test() {
   }
 }
 
+void rbtree_test() {
+  RBTree<int> rbtree;
+  cout << "RBTree size: " << rbtree.size() << endl;
+  rbtree.insert(1);
+  rbtree.insert(2);
+  rbtree.insert(3);
+  rbtree.insert(4);
+  rbtree.insert(5);
+  rbtree.insert(6);
+
+  cout << "RBTree size: " << rbtree.size() << endl;
+  cout << "RBTree root: " << rbtree.root->data << endl;
+  // cout << "RBTree root left: " << rbtree.root->left->data << endl;
+  // cout << "RBTree root right: " << rbtree.root->right->data << endl;
+  if (rbtree.root->left) {
+    cout << "RBTree root left: " << rbtree.root->left->data << endl;
+  } else {
+    cout << "RBTree root left: nullptr" << endl;
+  }
+  int index = 0;
+  for (auto iter = rbtree.begin(); iter != rbtree.end(); ++iter, ++index) {
+    cout << *iter << " ";
+    cout << "index: " << index << endl;
+  }
+}
+
 int main() {
   // string_test();
   // vector_test();
   // list_test();
-  set_test();
+  // set_test();
+  rbtree_test();
   return 0;
 }

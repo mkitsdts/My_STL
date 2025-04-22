@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdexcept>
+
 constexpr auto RED = true;
 constexpr auto BLACK = false;
 
@@ -9,13 +11,11 @@ template <class value_type> struct RBTree {
   struct node {
   public:
     node(const value_type &value)
-        : parent(nullptr), left(nullptr), right(nullptr), data(value_type()),
-          color(BLACK) // ���ڵ�
-    {}
+        : parent(nullptr), left(nullptr), right(nullptr), data(value),
+          color(BLACK) {}
     node(node *parent_value, const value_type &value)
         : parent(parent_value), left(nullptr), right(nullptr), data(value),
-          color(RED) // ��ͨ�ڵ�
-    {}
+          color(RED) {}
     ~node() {
       free(left);
       free(right);
@@ -41,8 +41,13 @@ template <class value_type> struct RBTree {
 
   struct RBTreeIterator {
     RBTreeIterator(node *n) : _node(n) {}
-    value_type operator*() { return _node->data; }
-    RBTreeIterator &operator++() {
+    value_type operator*() {
+      if (_node == nullptr) {
+        throw std::out_of_range("Iterator out of range");
+      }
+      return _node->data;
+    }
+    RBTreeIterator operator++() {
       if (!_node)
         return *this;
       if (_node->right) {
@@ -66,25 +71,22 @@ template <class value_type> struct RBTree {
       return tmp;
     }
     bool operator!=(RBTreeIterator iter) {
-      if (this->_node->data != (*iter)) {
+      if (_node != iter._node) {
         return true;
       }
       return false;
     }
-    bool operator==(RBTreeIterator iter) {
-      if (_node->data == (*iter)) {
-        return true;
-      }
-      return false;
-    }
+    bool operator==(RBTreeIterator iter) { return !(*this != iter); }
 
   private:
     node *_node;
   };
 
 public:
-  RBTree() : root(nullptr) {}
+  RBTree() : root(nullptr), size_(0) {}
+
   ~RBTree() {}
+
   void insert(const value_type &value) {
     if (root == nullptr) {
       root = new node(value);
@@ -347,6 +349,7 @@ public:
   }
 
   bool empty() { return root == nullptr; }
+
   node *find(const value_type &value) {
     node *cur = root;
     while (cur) {
@@ -363,39 +366,8 @@ public:
     }
     return nullptr; // ����ʧ��
   }
-  node *find(value_type &value) {
-    node *cur = root;
-    while (cur) {
-      if (value < cur->data) // keyֵС�ڸý���ֵ
-      {
-        cur = cur->left;            // �ڸý������������в���
-      } else if (value > cur->data) // keyֵ���ڸý���ֵ
-      {
-        cur = cur->right; // �ڸý������������в���
-      } else              // �ҵ���Ŀ����
-      {
-        return cur; // ���ظý��
-      }
-    }
-    return nullptr; // ����ʧ��
-  }
-  node *find(value_type &&value) {
-    node *cur = root;
-    while (cur) {
-      if (value < cur->data) // keyֵС�ڸý���ֵ
-      {
-        cur = cur->left;            // �ڸý������������в���
-      } else if (value > cur->data) // keyֵ���ڸý���ֵ
-      {
-        cur = cur->right; // �ڸý������������в���
-      } else              // �ҵ���Ŀ����
-      {
-        return cur; // ���ظý��
-      }
-    }
-    return nullptr; // ����ʧ��
-  }
-  size_t size() { return size_; }
+
+  unsigned int size() { return size_; }
 
   RBTreeIterator begin() {
     if (!root) {
@@ -412,7 +384,11 @@ public:
 
 private:
   bool root_is_black() { return root->color == BLACK; }
+
   bool is_son_self_red(node *&insert) {
+    if (insert == nullptr) {
+      return false;
+    }
     if (insert->color == RED) {
       if (insert->parent->color == RED) {
         return true;
@@ -420,6 +396,7 @@ private:
     }
     return false;
   }
+
   void del(node *&del) {
     if (del->left) {
       del(del->left);
@@ -495,11 +472,94 @@ private:
     left_rotate(cparent->right);
   }
 
+  void fixAfterInsert(node *cur) {
+    // 如果是根节点，直接变黑
+    if (cur == root) {
+      cur->color = BLACK;
+      return;
+    }
+
+    // 父节点为黑色，无需调整
+    if (cur->parent->color == BLACK) {
+      return;
+    }
+
+    // 父节点为红色时需要调整
+    node *cur_parent = cur->parent;
+    node *cur_grandfather = cur_parent->parent;
+
+    // 父节点没有父节点(即父节点是根)，特殊情况
+    if (!cur_grandfather) {
+      cur_parent->color = BLACK;
+      return;
+    }
+
+    // 根据父节点是祖父节点的左子节点还是右子节点分情况处理
+    if (cur_parent == cur_grandfather->left) {
+      node *cur_uncle = cur_grandfather->right;
+
+      // 情况1: 叔叔节点也是红色
+      if (cur_uncle && cur_uncle->color == RED) {
+        cur_parent->color = BLACK;
+        cur_uncle->color = BLACK;
+        cur_grandfather->color = RED;
+        fixAfterInsert(cur_grandfather); // 递归向上调整
+      }
+      // 情况2: 叔叔节点是黑色
+      else {
+        if (cur == cur_parent->right) { // LR情况
+          // 先左旋父节点
+          left_rotate(cur_parent);
+          // 交换当前节点和父节点的引用
+          node *temp = cur;
+          cur = cur_parent;
+          cur_parent = temp;
+        }
+
+        // LL情况: 右旋祖父节点
+        right_rotate(cur_grandfather);
+        // 调整颜色
+        cur_parent->color = BLACK;
+        cur_grandfather->color = RED;
+      }
+    } else { // 父节点是祖父节点的右子节点
+      node *cur_uncle = cur_grandfather->left;
+
+      // 情况1: 叔叔节点是红色
+      if (cur_uncle && cur_uncle->color == RED) {
+        cur_parent->color = BLACK;
+        cur_uncle->color = BLACK;
+        cur_grandfather->color = RED;
+        fixAfterInsert(cur_grandfather); // 递归向上调整
+      }
+      // 情况2: 叔叔节点是黑色
+      else {
+        if (cur == cur_parent->left) { // RL情况
+          // 先右旋父节点
+          right_rotate(cur_parent);
+          // 交换当前节点和父节点的引用
+          node *temp = cur;
+          cur = cur_parent;
+          cur_parent = temp;
+        }
+
+        // RR情况: 左旋祖父节点
+        left_rotate(cur_grandfather);
+        // 调整颜色
+        cur_parent->color = BLACK;
+        cur_grandfather->color = RED;
+      }
+    }
+
+    // 确保根节点为黑色
+    root->color = BLACK;
+  }
+
 public:
   node *root;
 
 private:
-  size_t size_;
+  unsigned int size_;
 };
 
 } // namespace STL
