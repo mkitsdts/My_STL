@@ -353,18 +353,15 @@ public:
   node *find(const value_type &value) {
     node *cur = root;
     while (cur) {
-      if (value < cur->data) // keyֵС�ڸý���ֵ
-      {
-        cur = cur->left;            // �ڸý������������в���
-      } else if (value > cur->data) // keyֵ���ڸý���ֵ
-      {
-        cur = cur->right; // �ڸý������������в���
-      } else              // �ҵ���Ŀ����
-      {
-        return cur; // ���ظý��
+      if (value < cur->data) {
+        cur = cur->left;
+      } else if (value > cur->data) {
+        cur = cur->right;
+      } else {
+        return cur;
       }
     }
-    return nullptr; // ����ʧ��
+    return nullptr;
   }
 
   unsigned int size() { return size_; }
@@ -411,16 +408,13 @@ private:
     node *subR = cparent->right;
     node *subRL = subR->left;
     node *cparentParent = cparent->parent;
-    // ����subRL��parent֮�����ϵ
     cparent->right = subRL;
     if (subRL)
       subRL->parent = cparent;
 
-    // ����parent��subR֮�����ϵ
     subR->left = (cparent);
     cparent->parent = subR;
 
-    // ����subR��parentParent֮�����ϵ
     if (cparentParent == nullptr) {
       root = subR;
       root->parent = nullptr;
@@ -433,22 +427,18 @@ private:
       subR->parent = cparentParent;
     }
   }
-  // ����
   void right_rotate(node *&cparent) {
     node *subL = cparent->left;
     node *subLR = subL->right;
     node *cparentParent = cparent->parent;
 
-    // ����subLR��parent֮�����ϵ
     cparent->left = subLR;
     if (subLR)
       subLR->parent = cparent;
 
-    // ����parent��subL֮�����ϵ
     subL->right = cparent;
     cparent->parent = subL;
 
-    // ����subL��parentParent֮�����ϵ
     if (cparentParent == nullptr) {
       root = subL;
       root->parent = nullptr;
@@ -462,7 +452,6 @@ private:
     }
   }
 
-  // ����˫��
   void LR_rotate(node *&cparent) {
     left_rotate(cparent);
     right_rotate(cparent->left);
