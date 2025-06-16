@@ -36,8 +36,9 @@ void list_test() {
   l.push_back(3);
   l.push_back(4);
   cout << l.size() << endl;
+  int i = 0;
   for (auto it = l.begin(); it != l.end(); ++it) {
-    cout << *it << " ";
+    cout << i++ << ": " << *it << endl;
   }
 }
 
@@ -82,8 +83,8 @@ void rbtree_test() {
 int main() {
   // string_test();
   // vector_test();
-  // list_test();
+  list_test();
   // set_test();
-  rbtree_test();
+  // rbtree_test();
   return 0;
 }

@@ -1,374 +1,171 @@
 ﻿#pragma once
 
 #include "allocator/allocator.h"
+#include <stdexcept>
 
-namespace STL
-{
-    constexpr auto REDUNDANCY_TIMES = 1.6;
-    constexpr auto BEGIN_SIZE_TIMES = 0.3;
-    constexpr auto ADJUST_TIMES = 1.5;
+namespace STL {
+constexpr auto REDUNDANCY_TIMES = 1.6;
+constexpr auto BEGIN_SIZE_TIMES = 0.3;
+constexpr auto ADJUST_TIMES = 1.5;
+constexpr auto SEM_SIZE = 20;
 
-    template <class T>
-    class My_Deque_Iterator
-    {
-    public:
-		using iterator = My_Deque_Iterator<T>;
-		using value_type = T;
-        using pointer = T*;
-		using reference = T&;
-	public:
-        My_Deque_Iterator()
-        {
-        }
-        My_Deque_Iterator(pointer ptr)
-        {
-            _ptr = ptr;
-        }
-        My_Deque_Iterator operator=(My_Deque_Iterator& iterator)
-        {
-            _ptr = iterator._ptr;
-            return *this;
-        }
-        My_Deque_Iterator operator++()
-        {
-            My_Deque_Iterator tmp = *this;
-            ++_ptr;
-            return tmp;
-        }
-        My_Deque_Iterator operator++(int)
-        {
-            ++_ptr;
-            return *this;
-        }
-        My_Deque_Iterator operator--()
-        {
-            My_Deque_Iterator tmp = *this;
-            --_ptr;
-            return tmp;
-        }
-        My_Deque_Iterator operator--(int)
-        {
-            --_ptr;
-            return *this;
-        }
-        value_type& operator*()
-        {
-            return *_ptr;
-        }
-        value_type* operator->()
-        {
-            return _ptr;
-        }
-        value_type* _ptr;
-    };
+template <class T> class My_Deque_Iterator {
+public:
+  using iterator = My_Deque_Iterator<T>;
+  using value_type = T;
+  using pointer = T *;
+  using reference = T &;
 
-    template <typename T>
-    class My_Deque
-    {
-    public:
-        using iterator = My_Deque_Iterator<T>;
-        using value_type = T;
-        using pointer = T*;
-        using reference = T&;
-    public:
-        My_Deque():_begin(nullptr),_end(nullptr),_size(0),_capacity(0)
-        {
-        }
-        My_Deque(size_t size):_begin(Allocator<value_type>::allocate(size*REDUNDANCY_TIMES)),_end(_begin+size*REDUNDANCY_TIMES)
-        _front(_begin),_back(_front + size),_size(size),_capacity(size*REDUNDANCY_TIMES)
-        {
-            fillData(value_type());
-        }
-        My_Deque(size_t size, value_type value const):_begin(Allocator<value_type>::allocate(size*REDUNDANCY_TIMES)),_end(_begin+size*REDUNDANCY_TIMES)
-        _front(_begin),_back(_front + size),_size(size),_capacity(size*REDUNDANCY_TIMES)
-        {
-            fillData(value);
-        }
-        My_Deque(My_Deque& deque const):_begin(Allocator<value_type>::allocate(deque._capacity)),_end(_begin+deque._capacity)
-        _front(_begin),_back(_front),_size(queue._size),_capacity(deque._capacity)
-        {
-            auto read = deque._front; 
-            while(read != deque._back)
-            {
-                *_back=*read;
-                ++_back;
-                ++read;
-            }
-			++_back;
-        }
-        ~My_Deque()
-        {
-        }
-    //api
-    public:
-        void push_back(value_type& value)
-        {
-            if(_size >= _capacity || *_back == _end)
-            {
-                adjust();
-            }
-            *_back = value;
-            ++_back;
-            ++_size;
-        }
-        void push_back(value_type&& value)
-        {
-            if (_size >= _capacity || *_back == _end)
-            {
-                adjust();
-            }
-            *_back = value;
-            ++_back;
-            ++_size;
-        }
-        void push_front(value_type& value)
-        {
-            if(_size >= _capacity || *_front == _begin)
-            {
-                adjust();
-            }
-            --_front;
-            *_front = value;
-            ++_size;
-        }
-        void push_front(value_type&& value)
-        {
-            if (_size >= _capacity || *_front == _begin)
-            {
-                adjust();
-            }
-            --_front;
-            *_front = value;
-            ++_size;
-        }
-        
-        void pop_back()
-        {
-            if(_size == 0)
-            {
-                return;
-            }
-            *(--_back) = value_type();
-            --_size;
-        }
-        void pop_front()
-        {
-            if(_size == 0)
-            {
-                return;
-            }
-            *_front = value_type();
-            ++_front;
-            --_size;
-        }
+public:
+  My_Deque_Iterator() {}
+  My_Deque_Iterator(pointer curr, pointer begin, pointer *map)
+      : _curr(curr), _map(map), _begin(begin) {}
+  My_Deque_Iterator operator=(My_Deque_Iterator &iterator) {
+    _curr = iterator._curr;
+    _map = iterator._map;
+    _begin = iterator._begin;
+    return *this;
+  }
+  My_Deque_Iterator operator++() {
+    My_Deque_Iterator tmp = *this;
+    if (_curr == _begin + SEM_SIZE) {
+    }
+  }
+  My_Deque_Iterator operator++(int) { return *this; }
+  My_Deque_Iterator operator--() {
+    My_Deque_Iterator tmp = *this;
+    return tmp;
+  }
+  My_Deque_Iterator operator--(int) { return *this; }
+  value_type operator*() {}
+  pointer operator->() {}
+  pointer _curr;
+  pointer _begin;
+  pointer *_map;
+};
 
-        value_type& front()
-        {
-            return *_front;
-        }
-        value_type& back()
-        {
-            return *(--_back);
-        }
+// Deque
+template <typename T> class My_Deque {
+public:
+  using iterator = My_Deque_Iterator<T>;
+  using value_type = T;
+  using pointer = T *;
+  using reference = T &;
 
-        void emplace(iterator pos,value_type& value)
-        {
-            if(_size >= _capacity || *_back == _end)
-            {
-                adjust();
-            }
-            auto write = _back;
-            auto read = _back - 1;
-            while(write != pos)
-            {
-                *write = *read;
-                --write;
-                --read;
-            }
-            *pos = value;
-        }
-        void emplace(iterator pos,value_type&& value)
-        {
-            if(_size >= _capacity || *_back == _end || *_front == _begin)
-            {
-                adjust();
-            }
-            auto write = _back;
-            auto read = _back - 1;
-            while(write != pos)
-            {
-                *write = *read;
-                --write;
-                --read;
-            }
-            *pos = value;
-        }
-        void emplace_back(value_type& value)
-        {
-            if(_size >= _capacity || *_back == _end)
-            {
-                adjust();
-            }
-            *_back = value;
-            ++_back;
-            ++_size;
-        }
-        void emplace_back(value_type&& value)
-        {
-            if(_size >= _capacity || *_back == _end)
-            {
-                adjust();
-            }
-            *_back = value;
-            ++_back;
-            ++_size;
-        }
-        void emplace_front(value_type& value)
-        {
-            if(_size >= _capacity || *_front == _begin)
-            {
-                adjust();
-            }
-            --_front;
-            *_front = value;
-            ++_size;
-        }
-        void emplace_front(value_type&& value)
-        {
-            if(_size >= _capacity || *_front == _begin)
-            {
-                adjust();
-            }
-            --_front;
-            *_front = value;
-            ++_size;
-        }
+public:
+  My_Deque()
+      : map(nullptr), _begin_index(0), _end_index(0), _size(0), _capacity(0) {}
+  My_Deque(int size)
+      : _size(size), _begin_index((size >> 1) - 1), _end_index(size >> 1),
+        _capacity(size) {
+    int seg_count = size / SEM_SIZE;
+    map = Allocator<value_type *>::allocate(seg_count);
+    _begin_index = size / 2;
+    _end_index = size / 2;
+    for (int i = 0; i < seg_count; ++i) {
+      map[i] = Allocator<value_type>::allocate(SEM_SIZE);
+      for (int j = 0; j < SEM_SIZE; ++j) {
+        *(map[i] + j) = value_type{};
+      }
+    }
+  }
+  My_Deque(std::size_t size, const value_type &value)
+      : _size(size), _begin_index(0), _end_index(0), _capacity(size) {
+    int seg_count = size / SEM_SIZE;
+    map = Allocator<value_type *>::allocate(seg_count);
+    _begin_index = size / 2;
+    _end_index = size / 2;
+    for (int i = 0; i < seg_count; ++i) {
+      map[i] = Allocator<value_type>::allocate(SEM_SIZE);
+      for (int j = 0; j < SEM_SIZE; ++j) {
+        *(map[i] + j) = value;
+      }
+    }
+  }
+  My_Deque(const My_Deque &deque)
+      : _size(deque._size), _begin_index(deque._begin_index),
+        _end_index(deque._end_index), _capacity(deque._capacity) {
+    map = Allocator<value_type *>::allocate(deque._size);
+    for (int i = 0; i < deque._size; ++i) {
+      map[i] = Allocator<value_type>::allocate(SEM_SIZE);
+      for (int j = 0; j < SEM_SIZE; ++j) {
+        *(map[i] + j) = *(deque.map[i] + j);
+      }
+    }
+  }
+  ~My_Deque() {}
+  My_Deque operator=(const My_Deque &deque) {
+    if (this != &deque) {
+      Allocator<value_type *>::dealloc(map, _size);
+      _size = deque._size;
+      _begin_index = deque._begin_index;
+      _end_index = deque._end_index;
+      map = deque.map;
+      _capacity = deque._capacity;
+    }
+    return *this;
+  }
+  // api
+public:
+  void push_back(const value_type &value) {
+    if (_end_index == _capacity || _end_index == _begin_index ||
+        _capacity <= 0) {
+      adjust();
+    }
+  }
+  void push_front(const value_type &value) {}
 
-        iterator& begin()
-        {
-            return iterator(_front);
-        }
-        iterator& end()
-        {
-            return iterator(_back + 1);
-        }
+  void pop_back() {}
+  void pop_front() {}
 
-        void resize(size_t size)
-        {
-            if(size == _size)
-            {
-                return;
-            }
-            if(size < _size)
-            {
-                dealloc(_begin + size);
-                _size = size;
-                _capacity = size;
-                _back = _begin + size;
-                _end = _begin + size;
-                return;
-            }
-            begin = Allocator<value_type>::allocate(size);
-            for(auto i = 0;i<size;++i)
-            {
-                *(begin+i)=*(_begin+i);
-                ++begin;
-                ++_begin;
-            }
-            Allocator::dealloc(_begin,_capacity);
-            _begin=begin;
-            _end=_begin+size;
-            _size=size;
-            _capacity=size;
-            _front=iterator(_begin);
-            _back=_front+size;
-        }
+  value_type front() {
+    if (_size == 0 || _begin_index == _end_index) {
+      throw std::out_of_range("Deque is empty");
+    }
+    int block_index = _begin_index / SEM_SIZE;
+    int offset = _begin_index % SEM_SIZE;
+    return *(map[block_index] + offset);
+  }
+  value_type back() {
+    if (_size == 0 || _begin_index == _end_index) {
+      throw std::out_of_range("Deque is empty");
+    }
+    int block_index = _end_index / SEM_SIZE;
+    int offset = _end_index % SEM_SIZE;
+    return *(map[block_index] + offset);
+  }
 
-        void clear()
-        {
-            if(!_end)
-                return;
-            --_back;
-            while(_back!=_front)
-            {
-                *_back=value_type();
-                --_back;
-            }
-            *_front=value_type();
-        }
+  void emplace(iterator &pos, const value_type &value) {
+    if (_size >= _capacity || _begin_index == _end_index) {
+      adjust();
+    }
+  }
 
-		void insert(size_t pos, value_type& value)
-        {
-			emplace(iterator(_front + pos),value);
-		}
-        void insert(size_t pos, value_type&& value)
-        {
-            emplace(iterator(_front + pos), value);
-        }
-        void insert(iterator pos, value_type& value)
-        {
-            emplace(pos,value);
-        }
-        void insert(iterator pos, value_type&& value)
-        {
-            emplace(pos,value);
-        }
+  iterator begin() { return iterator(_begin_index); }
+  iterator end() { return iterator(_end_index + 1); }
 
-        void erase(iterator pos)
-        {
-            for(auto iter=pos;(iter+1)!=_back;++iter)
-            {
-                *iter=*(iter+1);
-            }
-            --_size;
-            --_back;
-        }
+  void resize(size_t size) {}
 
-        bool empty()
-        {
-            return (_size == 0);
-        }
+  void clear() {}
 
-        size_t size()
-        {
-            return _size;
-        }
+  void erase(iterator &pos) {}
 
-        pointer _front;
-        pointer _back;
-        pointer _begin;
-        pointer _end;
-        size_t _size;
-        size_t _capacity;
-    private:
-        void fillData(value_type value)
-        {
-            for(size_t i = 0; i < _size; i++)
-            {
-                *(_front + i) = value;
-            }
-        }
+  bool empty() { return (_size == 0); }
 
-        void adjust()
-        {
-            auto new_capacity = _capacity * ADJUST_TIMES;
-            auto new_begin = Allocator<value_type>::allocate(new_capacity);
-            auto new_front = iterator(new_begin + ((new_capacity - _size) / 2));
-            auto new_back = new_front + _size;
-            auto write = new_front;
-            auto read = _front;
-            while(read != _back)
-            {
-                *write = *read;
-                ++write;
-                ++read;
-            }
-            Allocator<value_type>::dealloc(_begin,_capacity);
-            _begin = new_begin;
-            _end = new_begin + new_capacity;
-            _front = iterator(new_front);
-            _back = iterator(new_back);
-            _capacity = new_capacity;
-        }
-    };
-}
+  size_t size() { return _size; }
+
+  size_t _size;
+  value_type **map;
+  int _begin_index;
+  int _end_index;
+  std::size_t _capacity;
+
+private:
+  void fillData(value_type &value) const {
+    for (size_t i = 0; i < _size; i++) {
+    }
+  }
+
+  void adjust() const {}
+};
+} // namespace STL
