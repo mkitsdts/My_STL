@@ -148,4 +148,16 @@ inline static void heap_sort(RandomAccessIterator begin,
     heapify(begin, i, 0);
   }
 }
+
+template <class T> inline static int log(T x, T base) {
+  if (x <= 0 || base <= 1) {
+    return -1; // Invalid input
+  }
+  int result = 0;
+  while (x >= base) {
+    x /= base;
+    ++result;
+  }
+  return result;
+}
 } // namespace STL

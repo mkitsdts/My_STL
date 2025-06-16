@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "algorithm/algorithm.h"
 #include "base/rbtree.h"
 #include "container/my_list.h"
 #include "container/my_set.h"
@@ -80,11 +81,22 @@ void rbtree_test() {
   }
 }
 
+void log_test() {
+  cout << "log(100, 10) = " << log(100, 10) << endl;
+  cout << "log(1000, 10) = " << log(1000, 10) << endl;
+  cout << "log(1024, 2) = " << log(1024, 2) << endl;
+  cout << "log(1, 2) = " << log(1, 2) << endl;
+  cout << "log(0, 2) = " << log(0, 2) << endl;
+  cout << "log(2, 3) = " << log(2, 3) << endl;
+  cout << "log(3, 2) = " << log(3, 2) << endl;
+}
+
 int main() {
   // string_test();
   // vector_test();
-  list_test();
+  // list_test();
   // set_test();
   // rbtree_test();
+  log_test();
   return 0;
 }
