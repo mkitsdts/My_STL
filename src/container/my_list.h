@@ -5,23 +5,10 @@ mkitsdts
 #include "allocator/allocator.h"
 
 namespace STL {
-template <class T> class My_List_Node {
+template <class T> struct My_List_Node {
 public:
-  My_List_Node() {
-    data = T();
-    next = nullptr;
-    prev = nullptr;
-  }
-  My_List_Node(T &value) {
-    data = value;
-    next = nullptr;
-    prev = nullptr;
-  }
-  My_List_Node(const T &value) {
-    data = value;
-    next = nullptr;
-    prev = nullptr;
-  }
+  My_List_Node() : data(T{}), next(nullptr), prev(nullptr) {}
+  My_List_Node(const T &value) : data(value), next(nullptr), prev(nullptr) {}
   ~My_List_Node() {
     next = nullptr;
     prev = nullptr;
