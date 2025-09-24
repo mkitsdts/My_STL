@@ -1,11 +1,14 @@
 #include <iostream>
 
-#include "algorithm/algorithm.h"
-#include "base/rbtree.h"
-#include "container/my_list.h"
-#include "container/my_set.h"
-#include "container/my_string.h"
-#include "container/my_vector.h"
+#include "algorithm/algorithm.hpp"
+#include "base/hashtable.hpp"
+#include "base/rbtree.hpp"
+#include "container/my_deque.hpp"
+#include "container/my_list.hpp"
+#include "container/my_set.hpp"
+#include "container/my_string.hpp"
+#include "container/my_vector.hpp"
+#include <ctime>
 
 using namespace STL;
 using std::cout;
@@ -91,12 +94,63 @@ void log_test() {
   cout << "log(3, 2) = " << log(3, 2) << endl;
 }
 
+void alloc_test() {
+  auto start = clock();
+  const int N = 1000000;
+  for (int i = 0; i < N; ++i) {
+    void *p = STL::Alloc::allocate(20);
+  }
+  auto end = clock();
+  cout << "my allocator spend time: " << end - start << endl;
+  auto start2 = clock();
+  for (int i = 0; i < N; ++i) {
+    void *p = operator new(20);
+  }
+  auto end2 = clock();
+  cout << "standard lib spend time: " << end2 - start2 << endl;
+}
+
+void hashtable_test() {
+  HashTable<int> ht;
+  ht.insert(1);
+  ht.insert(2);
+  ht.insert(3);
+  ht.insert(4);
+  ht.insert(5);
+  ht.insert(6);
+  ht.insert(7);
+  ht.insert(8);
+  ht.insert(9);
+  ht.insert(10);
+  cout << "Count 5: " << ht.count(5) << endl;
+  cout << "Count 11: " << ht.count(11) << endl;
+  ht.erase(5);
+  cout << "Count 5 after erase: " << ht.count(5) << endl;
+}
+
+void deque_test() {
+  My_Deque<int> dq;
+  dq.push_back(1);
+  cout << dq.back() << " ";
+  dq.push_back(2);
+  cout << dq.back() << " ";
+  dq.push_back(3);
+  cout << dq.back() << " ";
+  dq.push_back(4);
+  cout << dq.back() << " ";
+  dq.push_front(0);
+  cout << dq.back() << " " << endl;
+}
+
 int main() {
   // string_test();
   // vector_test();
   // list_test();
   // set_test();
   // rbtree_test();
-  log_test();
+  // log_test();
+  // alloc_test();
+  // hashtable_test();
+  deque_test();
   return 0;
 }

@@ -403,7 +403,7 @@ private:
     }
     free(del);
   }
-  // ����
+  //
   void left_rotate(node *&cparent) {
     node *subR = cparent->right;
     node *subRL = subR->left;
@@ -462,79 +462,80 @@ private:
   }
 
   void fixAfterInsert(node *cur) {
-    // 如果是根节点，直接变黑
+    // if cur is root, color it black and return
     if (cur == root) {
       cur->color = BLACK;
       return;
     }
 
-    // 父节点为黑色，无需调整
+    // If parent is black, no need to adjust
     if (cur->parent->color == BLACK) {
       return;
     }
 
-    // 父节点为红色时需要调整
+    // If parent is red, adjustment is needed
     node *cur_parent = cur->parent;
     node *cur_grandfather = cur_parent->parent;
 
-    // 父节点没有父节点(即父节点是根)，特殊情况
+    // If parent has no parent (i.e., parent is root), special case
+    // just need to color parent black
     if (!cur_grandfather) {
       cur_parent->color = BLACK;
       return;
     }
 
-    // 根据父节点是祖父节点的左子节点还是右子节点分情况处理
+    // judge if parent is left or right child of grandfather
     if (cur_parent == cur_grandfather->left) {
       node *cur_uncle = cur_grandfather->right;
 
-      // 情况1: 叔叔节点也是红色
+      // case1: uncle is red
       if (cur_uncle && cur_uncle->color == RED) {
         cur_parent->color = BLACK;
         cur_uncle->color = BLACK;
         cur_grandfather->color = RED;
-        fixAfterInsert(cur_grandfather); // 递归向上调整
+        fixAfterInsert(cur_grandfather); // recursive adjustment
       }
-      // 情况2: 叔叔节点是黑色
+      // case2: uncle is black
       else {
-        if (cur == cur_parent->right) { // LR情况
-          // 先左旋父节点
+        if (cur == cur_parent->right) {
+          // if LR case, first left rotate parent
           left_rotate(cur_parent);
-          // 交换当前节点和父节点的引用
+          // swap current node and parent node references
           node *temp = cur;
           cur = cur_parent;
           cur_parent = temp;
         }
 
-        // LL情况: 右旋祖父节点
+        // then RR case: right rotate grandfather
         right_rotate(cur_grandfather);
-        // 调整颜色
+        // adjust colors
         cur_parent->color = BLACK;
         cur_grandfather->color = RED;
       }
-    } else { // 父节点是祖父节点的右子节点
+    } else { // If parent is right child of grandfather
       node *cur_uncle = cur_grandfather->left;
 
-      // 情况1: 叔叔节点是红色
+      // case1: uncle is red
       if (cur_uncle && cur_uncle->color == RED) {
         cur_parent->color = BLACK;
         cur_uncle->color = BLACK;
         cur_grandfather->color = RED;
-        fixAfterInsert(cur_grandfather); // 递归向上调整
+        fixAfterInsert(cur_grandfather); // recursive adjustment
       }
-      // 情况2: 叔叔节点是黑色
+      // case2: uncle is black
       else {
-        if (cur == cur_parent->left) { // RL情况
-          // 先右旋父节点
+        if (cur == cur_parent->left) { // RL case
+          // first right rotate parent
           right_rotate(cur_parent);
-          // 交换当前节点和父节点的引用
+          // swap current node and parent node references
           node *temp = cur;
           cur = cur_parent;
           cur_parent = temp;
         }
 
-        // RR情况: 左旋祖父节点
+        // RR case: left rotate grandfather
         left_rotate(cur_grandfather);
-        // 调整颜色
+        // adjust colors
         cur_parent->color = BLACK;
         cur_grandfather->color = RED;
       }

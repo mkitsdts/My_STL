@@ -1,6 +1,7 @@
 ﻿#pragma once
 
-#include "allocator/allocator.h"
+#include "allocator/allocator.hpp"
+#include "container/my_vector.hpp"
 #include <stdexcept>
 
 namespace STL {
@@ -51,6 +52,16 @@ public:
   using value_type = T;
   using pointer = T *;
   using reference = T &;
+
+private:
+  template <class value_type> struct segment {
+    segment() : begin(0), end(0), data(0), next(nullptr), prev(nullptr) {}
+    My_Vector<value_type> data;
+    segment *next;
+    segment *prev;
+    int begin;
+    int end;
+  };
 
 public:
   My_Deque()
@@ -108,15 +119,40 @@ public:
   // api
 public:
   void push_back(const value_type &value) {
-    if (_end_index == _capacity || _end_index == _begin_index ||
-        _capacity <= 0) {
+    if (_size >= _capacity) {
       adjust();
     }
+    int block_index = _end_index / SEM_SIZE;
+    int offset = _end_index % SEM_SIZE;
+    *(map[block_index] + offset) = value;
+    ++_end_index;
+    ++_size;
   }
-  void push_front(const value_type &value) {}
+  void push_front(const value_type &value) {
+    if (_size >= _capacity) {
+      adjust();
+    }
+    --_begin_index;
+    int block_index = _begin_index / SEM_SIZE;
+    int offset = _begin_index % SEM_SIZE;
+    *(map[block_index] + offset) = value;
+    ++_size;
+  }
 
-  void pop_back() {}
-  void pop_front() {}
+  void pop_back() {
+    if (_size == 0 || _begin_index == _end_index) {
+      throw std::out_of_range("Deque is empty");
+    }
+    --_end_index;
+    --_size;
+  }
+  void pop_front() {
+    if (_size == 0 || _begin_index == _end_index) {
+      throw std::out_of_range("Deque is empty");
+    }
+    ++_begin_index;
+    --_size;
+  }
 
   value_type front() {
     if (_size == 0 || _begin_index == _end_index) {
@@ -139,33 +175,91 @@ public:
     if (_size >= _capacity || _begin_index == _end_index) {
       adjust();
     }
+    int index = (pos._curr - pos._begin) + _begin_index;
+    for (int i = _end_index; i > index; --i) {
+      int curr_block_index = i / SEM_SIZE;
+      int curr_offset = i % SEM_SIZE;
+      int prev_block_index = (i - 1) / SEM_SIZE;
+      int prev_offset = (i - 1) % SEM_SIZE;
+      *(map[curr_block_index] + curr_offset) =
+          *(map[prev_block_index] + prev_offset);
+    }
   }
 
   iterator begin() { return iterator(_begin_index); }
   iterator end() { return iterator(_end_index + 1); }
 
-  void resize(size_t size) {}
+  void resize(std::size_t size) {
+    if (size <= 0) {
+      throw std::out_of_range("Size must be greater than 0");
+    }
+    if (size > _capacity) {
+      adjust();
+    }
+    _size = size;
+    _begin_index = (_capacity - size) / 2;
+    _end_index = _begin_index + size;
+  }
 
-  void clear() {}
+  void clear() {
+    _begin_index = _capacity / 2;
+    _end_index = _capacity / 2;
+    _size = 0;
+  }
 
-  void erase(iterator &pos) {}
-
-  bool empty() { return (_size == 0); }
-
-  size_t size() { return _size; }
-
-  size_t _size;
-  value_type **map;
-  int _begin_index;
-  int _end_index;
-  std::size_t _capacity;
-
-private:
-  void fillData(value_type &value) const {
-    for (size_t i = 0; i < _size; i++) {
+  void erase(iterator &pos) {
+    if (_size == 0 || _begin_index == _end_index) {
+      throw std::out_of_range("Deque is empty");
+    }
+    int index = (pos._curr - pos._begin) + _begin_index;
+    int block_index = index / SEM_SIZE;
+    int offset = index % SEM_SIZE;
+    for (int i = index; i < _end_index - 1; ++i) {
+      int curr_block_index = i / SEM_SIZE;
+      int curr_offset = i % SEM_SIZE;
+      int next_block_index = (i + 1) / SEM_SIZE;
+      int next_offset = (i + 1) % SEM_SIZE;
+      *(map[curr_block_index] + curr_offset) =
+          *(map[next_block_index] + next_offset);
     }
   }
 
-  void adjust() const {}
+  bool empty() { return (_size == 0); }
+
+  std::size_t size() { return _size; }
+
+private:
+  void adjust() {
+    int new_capacity = _capacity * REDUNDANCY_TIMES;
+    int seg_count = new_capacity / SEM_SIZE;
+    value_type **new_map = Allocator<value_type *>::allocate(seg_count);
+    int new_begin_index = (new_capacity - _size) / 2;
+    int new_end_index = new_begin_index + _size;
+    for (int i = 0; i < seg_count; ++i) {
+      new_map[i] = Allocator<value_type>::allocate(SEM_SIZE);
+      for (int j = 0; j < SEM_SIZE; ++j) {
+        *(new_map[i] + j) = value_type{};
+      }
+    }
+    int old_index = _begin_index;
+    for (int i = new_begin_index; i < new_end_index; ++i, ++old_index) {
+      int old_block_index = old_index / SEM_SIZE;
+      int old_offset = old_index % SEM_SIZE;
+      int new_block_index = i / SEM_SIZE;
+      int new_offset = i % SEM_SIZE;
+      *(new_map[new_block_index] + new_offset) =
+          *(map[old_block_index] + old_offset);
+    }
+    Allocator<value_type *>::deallocate(map, _capacity / SEM_SIZE);
+    map = new_map;
+    _begin_index = new_begin_index;
+    _end_index = new_end_index;
+    _capacity = new_capacity;
+  }
+  value_type **map;
+  int _begin_index;
+  int _end_index;
+  std::size_t _size;
+  std::size_t _capacity;
 };
 } // namespace STL

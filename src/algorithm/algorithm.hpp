@@ -9,6 +9,7 @@ inline static void swap(value_type &a, value_type &b) {
   b = tmp;
 }
 
+// too easy, just for test
 template <typename RandomAccessIterator, typename Compare>
 inline static void sort(RandomAccessIterator begin, RandomAccessIterator end,
                         Compare compare) {

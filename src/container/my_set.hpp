@@ -1,6 +1,6 @@
 #pragma once
-#include "allocator/allocator.h"
-#include "base/rbtree.h"
+#include "allocator/allocator.hpp"
+#include "base/rbtree.hpp"
 #include <functional>
 
 namespace STL {
@@ -16,7 +16,7 @@ public:
   void erase(value_type &value) { tree.erase(value); }
   void erase(const value_type &value) { tree.erase(value); }
   void clear() { tree.clear(); }
-  size_t size() { return tree.size(); }
+  std::size_t size() { return tree.size(); }
   bool empty() { return tree.empty(); }
   bool find(value_type &value) { return tree.find(value); }
   bool find(const value_type &value) { return tree.find(value); }

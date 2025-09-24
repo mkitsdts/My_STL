@@ -2,7 +2,7 @@
 mkitsdts
 */
 #pragma once
-#include "allocator/allocator.h"
+#include "allocator/allocator.hpp"
 
 namespace STL {
 template <class T> struct My_List_Node {
@@ -80,7 +80,7 @@ public:
   My_List(const My_List &list) {
     resize(list.size());
     iterator temp = list.head;
-    for (size_t i = 0; i < list.size(); ++i) {
+    for (std::size_t i = 0; i < list.size(); ++i) {
       push_back(*temp);
       ++temp;
     }
@@ -110,10 +110,10 @@ public:
     }
     return iterator(tail);
   }
-  iterator at(size_t pos) {
+  iterator at(std::size_t pos) {
     if (pos < _size) {
       auto it = head;
-      for (size_t i = 0; i < pos; ++i) {
+      for (std::size_t i = 0; i < pos; ++i) {
         it = it->get_next();
       }
       return iterator(it);
@@ -237,7 +237,7 @@ public:
     --_size;
     return *first->get_prev();
   }
-  iterator erase(size_t pos) {
+  iterator erase(std::size_t pos) {
     auto temp = head;
     while (pos--) {
       ++temp;
@@ -246,11 +246,11 @@ public:
     return erase(temp);
   }
 
-  size_t size() { return _size; }
+  std::size_t size() { return _size; }
 
 private:
   node *head;
   node *tail;
-  size_t _size;
+  std::size_t _size;
 };
 } // namespace STL
