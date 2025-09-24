@@ -1,5 +1,4 @@
-#ifndef MEMORY_H
-#define MEMORY_H
+#pragma once
 
 #include <atomic>
 
@@ -83,4 +82,3 @@ template <class T> inline my_unique_ptr<T> make_my_unique(T *ptr) {
   return my_unique_ptr<T>(ptr);
 }
 } // namespace STL
-#endif // !MEMORY_H
